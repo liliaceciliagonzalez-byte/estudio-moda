@@ -44,9 +44,9 @@ export default async function handler(req, res) {
       },
     });
     // Con cara de modelo usamos el modelo Pro, que respeta mucho mejor la identidad.
-    let data;
+    let data, motor = flash, aviso = "";
     if (modelo) {
-      try { data = await run(pro); } catch (e) { data = await run(flash); }
+      try { data = await run(pro); motor = pro; } catch (e) { aviso = String(e.message || e).slice(0, 200); data = await run(flash); }
     } else {
       data = await run(flash);
     }
@@ -54,7 +54,7 @@ export default async function handler(req, res) {
     const img = parts.find((p) => p.inlineData || p.inline_data);
     const inline = img?.inlineData || img?.inline_data;
     if (!inline?.data) return res.status(502).json({ error: "No se pudo crear la foto. Prueba con otra imagen de la prenda." });
-    return res.status(200).json({ imagen: inline.data, mime: inline.mimeType || inline.mime_type || "image/png" });
+    return res.status(200).json({ imagen: inline.data, mime: inline.mimeType || inline.mime_type || "image/png", motor, aviso });
   } catch (e) {
     return res.status(500).json({ error: e.message || "Error inesperado" });
   }
