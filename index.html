@@ -426,7 +426,7 @@ async function makeVideo(src, after){
       if(!url) throw new Error("El vídeo tardó demasiado. Prueba otra vez.");
     }
     box.innerHTML = `<video src="${url}" controls playsinline loop autoplay muted></video><div class="dl"><a class="btn btn-o" download="estudio-moda-video-${Date.now()}.mp4" href="${url}">Descargar</a></div>`;
-  }catch(e){ box.remove(); showErr(e.message); }
+  }catch(e){ box.innerHTML = `<div class="skel" style="animation:none;color:#ff8a8a">No se pudo crear el vídeo:<br>${esc(e.message)}</div>`; }
 }
 document.addEventListener("click", e => { const b=e.target.closest(".copy"); if(!b) return; navigator.clipboard?.writeText(b.dataset.t).then(()=>{ b.textContent="¡Copiado!"; setTimeout(()=>b.textContent="Copiar",1500); }); });
 </script>
