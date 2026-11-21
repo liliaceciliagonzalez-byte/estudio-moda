@@ -101,6 +101,25 @@ summary{cursor:pointer;font-weight:600}details p{color:var(--muted);margin-top:8
 .final{text-align:center;border:1px solid var(--line);border-radius:28px;padding:56px 20px;background:radial-gradient(circle at 50% 0,rgba(255,102,0,.18),transparent 60%)}
 footer{border-top:1px solid var(--line);padding:30px 0;color:var(--muted);font-size:14px}
 footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.res .dl{display:flex;gap:6px}
+.vid{background:#000;border-radius:16px;overflow:hidden;border:1px solid var(--turq);position:relative}
+.vid video{width:100%;display:block;aspect-ratio:9/16;background:#000}
+.vid .dl{position:absolute;right:10px;bottom:10px}
+.vid .skel{aspect-ratio:9/16;text-align:center;padding:20px}
+.legal{font-size:11px;color:var(--muted);margin-top:8px}
+.upsell{display:none;margin-top:12px;border:1px solid var(--orange);border-radius:14px;padding:14px;font-size:14px}
+.upsell a{color:var(--orange);font-weight:600}
+details.brand{margin-top:14px;background:#141210}
+details.brand summary{font-size:13px}
+.toggle{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:4px;margin-top:10px}
+.toggle button{border:0;background:none;color:var(--muted);padding:8px 16px;border-radius:999px;font:600 14px Inter;cursor:pointer}
+.toggle button.on{background:var(--cream);color:#121110}
+.save{font-size:12px;color:var(--turq);margin-left:6px}
+.guar{font-size:13px;color:var(--muted)}
+.founder{display:grid;grid-template-columns:1fr 1.4fr;gap:30px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:34px}
+.founder q{font-family:'DM Serif Display';font-size:26px;line-height:1.3;display:block}
+.founder small{display:block;margin-top:14px;color:var(--turq);font-size:15px}
+@media(max-width:900px){.founder{grid-template-columns:1fr}}
 @media(max-width:900px){.hero-grid,.studio,.steps,.plans,.ba{grid-template-columns:1fr}.feat{grid-template-columns:1fr 1fr}.links{display:none}}
 </style>
 </head>
@@ -134,23 +153,31 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
         <input type="file" id="file" accept="image/*" hidden>
         <div id="dropEmpty"><div style="font-size:34px">📸</div><b>Sube la foto de tu prenda</b><div class="mini">En percha, sobre la mesa o en maniquí · JPG o PNG</div></div>
       </div>
+      <div class="legal">Al subir fotos confirmas que tienes derecho a usarlas y el permiso de las personas que aparezcan.</div>
+      <div class="lbl">Qué crear</div>
+      <div class="chips" id="modes"></div>
       <div class="lbl">Estilo</div>
       <div class="styles" id="styles"></div>
       <div class="lbl">Formato</div>
       <div class="chips" id="formats"></div>
       <div class="lbl">Fotos</div>
       <div class="chips" id="counts"></div>
+      <div class="lbl">Movimiento del vídeo 9:16</div>
+      <div class="chips" id="moves"></div>
       <div class="lbl">Detalles (opcional)</div>
       <textarea id="det" rows="2" placeholder="Ej.: modelo morena de 40 años, tacones nude, fondo rosa suave"></textarea>
+      <details class="brand"><summary>Mi estilo de marca <span class="save" id="brandSaved"></span></summary><textarea id="marca" rows="3" style="margin-top:10px" placeholder="Ej.: modelos latinas de 30-45 años, tonos cálidos y beige, ambiente elegante y femenino"></textarea><div class="mini">Se guarda y se aplica a todas tus fotos.</div></details>
       <div id="codeBox" style="display:none"><div class="lbl">Código de acceso</div><input type="text" id="code" placeholder="Tu código de plan"></div>
       <button class="btn btn-o go" id="go" disabled>Sube tu prenda primero</button>
       <div class="err" id="err"></div>
+      <div class="mini" id="freeNote">Tu primera creación es gratis. Sin tarjeta.</div>
+      <div class="upsell" id="upsell">Ya usaste tu prueba gratis. <a href="#precios">Elige tu plan</a> y te damos tu código al momento.</div>
     </div>
     <div class="panel results" id="results">
       <div class="empty" id="empty">
         <div class="ph" id="ph"></div>
         <b style="color:var(--cream);font-size:18px">Aquí aparecerán tus fotos</b>
-        <span>Y también el nombre, la descripción y el caption de tu producto.</span>
+        <span>Y también el nombre, la descripción y el caption de tu producto. Toca «Vídeo» en cualquier foto para convertirla en un reel 9:16.</span>
       </div>
       <div class="grid" id="grid"></div>
       <div class="ficha" id="ficha"></div>
@@ -169,7 +196,7 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
   <h2>Cómo funciona <em>en 3 pasos</em></h2>
   <div class="steps">
     <div class="step"><div class="n">1</div><h3>Sube tu prenda</h3><p>Una foto con el móvil basta: en percha, sobre la mesa o en maniquí.</p></div>
-    <div class="step"><div class="n">2</div><h3>Elige qué crear</h3><p>Estudio limpio, editorial, exterior, lujo, flat lay… y el formato para tu web, feed o historias.</p></div>
+    <div class="step"><div class="n">2</div><h3>Elige qué crear</h3><p>Fotos, campañas, contenido o vídeo 9:16. En el estilo y formato que necesites.</p></div>
     <div class="step"><div class="n">3</div><h3>Descarga y publica</h3><p>Fotos con modelo, nombre, descripción y caption listos para vender.</p></div>
   </div>
 </div></section>
@@ -177,27 +204,36 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
 <section><div class="wrap">
   <div class="kicker">Todo en un lugar</div>
   <h2>Tu equipo creativo <em>completo</em></h2>
+  <p class="lead">Creación de vídeos incluida en todos los planes de pago.</p>
   <div class="feat">
     <div class="f"><div class="ic">👗</div><h4>Fotos de moda</h4><p>Tu prenda en 9 estilos profesionales.</p></div>
     <div class="f"><div class="ic">💃</div><h4>Modelos IA</h4><p>Elige cómo quieres a la modelo en “Detalles”.</p></div>
     <div class="f"><div class="ic">✍️</div><h4>Textos de producto</h4><p>Nombre, descripción, estilismo y caption.</p></div>
     <div class="f"><div class="ic">📱</div><h4>Para redes</h4><p>Formatos de feed, historias y marketplace.</p></div>
-    <div class="f"><div class="ic">🛍️</div><h4>Campañas</h4><p>Mismo look, varias escenas para tu lanzamiento.</p></div>
+    <div class="f"><div class="ic">🛍️</div><h4>Campañas de producto</h4><p>Una prenda, 3 escenas distintas de una vez.</p></div>
     <div class="f"><div class="ic">🗂️</div><h4>Catálogos</h4><p>Fondos coherentes para toda tu colección.</p></div>
-    <div class="f"><div class="ic">🎬</div><h4>Vídeo 9:16 <span class="soon">pronto</span></h4><p>Tu prenda en movimiento.</p></div>
+    <div class="f"><div class="ic">🎬</div><h4>Vídeo 9:16</h4><p>Tu prenda en movimiento: pasarela, giro, detalle.</p></div>
     <div class="f"><div class="ic">📣</div><h4>Anuncios <span class="soon">pronto</span></h4><p>Creatividades listas para Meta.</p></div>
   </div>
 </div></section>
 
 <section id="precios"><div class="wrap">
   <div class="kicker">Planes</div>
-  <h2>Empieza <em>gratis</em></h2>
+  <h2>Elige tu plan para crear <em>una marca que vende</em></h2>
+  <p class="lead">1 ficha completa gratis, sin tarjeta. Cada crédito: foto, nombre, descripción, estilismo y caption. Cancela cuando quieras.</p>
+  <div class="toggle" id="billing"><button class="on" data-b="m">Mensual</button><button data-b="a">Anual · ahorra 20%</button></div>
   <div class="plans">
-    <div class="plan"><b>Gratis</b><div class="p">0 €</div><ul><li>1 ficha completa</li><li>Foto + nombre + descripción + caption</li><li>Sin tarjeta</li></ul><a class="btn btn-g" href="#crear">Probar ahora</a></div>
-    <div class="plan hot"><b>Starter</b><div class="p">29 € <small>/mes</small></div><ul><li>75 fichas al mes</li><li>Todos los estilos y formatos</li><li>Los créditos que no uses pasan al mes siguiente</li><li>Cancela cuando quieras</li></ul><a class="btn btn-o" href="https://ig.me/m/lilia0908" target="_blank" rel="noopener">Quiero Starter</a></div>
-    <div class="plan"><b>Growth</b><div class="p">69 € <small>/mes</small></div><ul><li>200 fichas al mes</li><li>Ideal para catálogos y campañas</li><li>Soporte prioritario</li></ul><a class="btn btn-g" href="https://ig.me/m/lilia0908" target="_blank" rel="noopener">Quiero Growth</a></div>
+    <div class="plan"><b>Starter</b><p class="guar">Para boutiques que empiezan a crear contenido con IA.</p><div class="p" data-m="29" data-a="23">29 € <small>/mes</small></div><ul><li>75 créditos al mes</li><li>Acceso a creación de vídeos</li><li>Foto + ficha completa por crédito</li><li>Todos los estilos</li><li>Sin prompts: solo subes tu prenda</li><li>Los créditos sin usar se acumulan</li></ul><p class="guar">Garantía de 3 días: si no te encanta, te devolvemos el 100%.</p><a class="btn btn-o" href="https://ig.me/m/lilia0908" target="_blank" rel="noopener">Comenzar Starter</a></div>
+    <div class="plan hot"><b>Growth · Más popular</b><p class="guar">Para boutiques que crean contenido cada semana.</p><div class="p" data-m="69" data-a="55">69 € <small>/mes</small></div><ul><li>200 créditos al mes</li><li>Acceso a creación de vídeos</li><li>Estilo guardado de tu marca</li><li>Soporte por WhatsApp</li><li>Los créditos sin usar se acumulan</li><li>Clase de IA y demo privada</li></ul><p class="guar">Garantía de 3 días: si no te encanta, te devolvemos el 100%.</p><a class="btn btn-o" href="https://ig.me/m/lilia0908" target="_blank" rel="noopener">Comenzar Growth</a></div>
+    <div class="plan"><b>Paquete fundador</b><p class="guar">Para negocios que quieren software hecho a su medida.</p><div class="p" style="font-size:34px">A medida</div><ul><li>Tu propia app con tu marca</li><li>Funciones pensadas para tu negocio</li><li>Cotización personalizada</li></ul><a class="btn btn-g" href="https://ig.me/m/lilia0908" target="_blank" rel="noopener">Pedir cotización</a></div>
   </div>
 </div></section>
+
+<section><div class="wrap"><div class="founder">
+  <div><div class="kicker">De parte de la fundadora</div><h2>Creado por <em>quien vende</em></h2></div>
+  <div><q>Sé lo que cuesta producir contenido cada semana. Por eso creé Estudio Moda: para que cualquier boutique tenga fotos y vídeos de marca grande, desde el móvil y sin pagar una producción.</q><small>Lilia González · Fundadora de Estudio Moda</small>
+  <div class="cta-row"><a class="btn btn-g" href="https://ig.me/m/lilia0908" target="_blank" rel="noopener">Agenda una demo gratis (30 min)</a></div></div>
+</div></div></section>
 
 <section id="faq"><div class="wrap">
   <div class="kicker">Dudas</div>
@@ -207,6 +243,10 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
     <details><summary>¿La prenda sale igual?</summary><p>La IA mantiene color, tejido, estampado y detalles. Si algo no queda perfecto, vuelve a generar o añade indicaciones en “Detalles”.</p></details>
     <details><summary>¿Puedo usar las fotos en mi tienda y en anuncios?</summary><p>Sí, las fotos son para que las uses en tu web, redes, catálogos y publicidad.</p></details>
     <details><summary>¿Necesito saber de diseño?</summary><p>No. Subes, eliges estilo y descargas.</p></details>
+    <details><summary>¿Puedo hacer vídeos?</summary><p>Sí. Toca «Vídeo» en cualquier foto creada y elige el movimiento: pasarela, giro, detalle o viento. Sale en 9:16 para Reels y TikTok. Incluido en los planes de pago.</p></details>
+    <details><summary>¿Qué pasa con los créditos que no uso?</summary><p>Se acumulan mes a mes mientras tu plan esté activo.</p></details>
+    <details><summary>¿Las imágenes que creo son mías?</summary><p>Sí. Fotos, vídeos, nombres, descripciones y captions son tuyos.</p></details>
+    <details><summary>¿Funciona desde el móvil?</summary><p>Sí. Subes la foto desde tu galería, eliges el estilo y publicas en minutos.</p></details>
     <details><summary>¿Cómo contrato un plan?</summary><p>Escríbenos por Instagram y te damos tu código de acceso al momento.</p></details>
   </div>
 </div></section>
@@ -234,8 +274,10 @@ const STYLES = [
 ];
 const FORMATS = [["3:4","Tienda 3:4"],["4:5","Feed 4:5"],["9:16","Historias 9:16"],["1:1","Cuadrado 1:1"]];
 const COUNTS = ["1","2","3","4"];
+const MODES = [["foto","Fotos"],["campana","Campaña (3 escenas)"]];
+const MOVES = [["pasarela","Pasarela"],["giro","Giro 360°"],["detalle","Detalle"],["viento","Con brisa"]];
 const $ = id => document.getElementById(id);
-const state = { img:null, mime:"image/jpeg", style:"estudio-limpio", format:"3:4", count:"2", busy:false };
+const state = { img:null, mime:"image/jpeg", style:"estudio-limpio", format:"3:4", count:"2", mode:"foto", move:"pasarela", busy:false };
 
 // style picker
 $("styles").innerHTML = STYLES.map(([id,t,img]) => `<button class="st${id===state.style?" on":""}" data-id="${id}"><img src="${IMG(img)}" alt="${t}" loading="lazy"><span>${t}</span></button>`).join("");
@@ -243,6 +285,15 @@ $("styles").onclick = e => { const b = e.target.closest(".st"); if(!b) return; s
 const chips = (el, items, key) => { $(el).innerHTML = items.map(([v,t]) => `<button class="chip${v===state[key]?" on":""}" data-v="${v}">${t}</button>`).join("");
   $(el).onclick = e => { const b=e.target.closest(".chip"); if(!b) return; state[key]=b.dataset.v; $(el).querySelectorAll(".chip").forEach(x=>x.classList.toggle("on",x===b)); updateBtn(); }; };
 chips("formats", FORMATS, "format");
+chips("modes", MODES, "mode");
+chips("moves", MOVES, "move");
+const marca = $("marca");
+try{ marca.value = localStorage.getItem("em_marca")||""; }catch{}
+marca.oninput = () => { try{ localStorage.setItem("em_marca", marca.value); $("brandSaved").textContent = "guardado ✓"; }catch{} };
+document.querySelectorAll("#billing button").forEach(b => b.onclick = () => {
+  document.querySelectorAll("#billing button").forEach(x=>x.classList.toggle("on",x===b));
+  document.querySelectorAll(".plan .p[data-m]").forEach(p => p.innerHTML = `${p.dataset[b.dataset.b]} € <small>/mes${b.dataset.b==="a"?" · pago anual":""}</small>`);
+});
 chips("counts", COUNTS.map(c=>[c, c===("1")?"1 foto":`${c} fotos`]), "count");
 $("ph").innerHTML = [1,4,7].map(i=>`<img src="${IMG(STYLES[i][2])}" alt="">`).join("");
 $("ba").innerHTML = [[0,"Estudio limpio para tu tienda online"],[2,"Exterior cálido para campañas"],[7,"Flat lay para catálogos y redes"]]
@@ -275,12 +326,13 @@ function load(f){
   im.src = url;
 }
 function reset(){ state.img=null; drop.innerHTML = `<div id="dropEmpty"><div style="font-size:34px">📸</div><b>Sube la foto de tu prenda</b><div class="mini">En percha, sobre la mesa o en maniquí · JPG o PNG</div></div>`; drop.appendChild(file); file.value=""; updateBtn(); }
-function updateBtn(){ const b=$("go"); b.disabled = !state.img || state.busy; b.textContent = state.busy ? "Creando tus fotos…" : !state.img ? "Sube tu prenda primero" : `Crear ${state.count==="1"?"1 foto":state.count+" fotos"} ✨`; }
+function updateBtn(){ const b=$("go"); b.disabled = !state.img || state.busy; b.textContent = state.busy ? "Creando…" : !state.img ? "Sube tu prenda primero" : state.mode==="campana" ? "Crear campaña de 3 escenas ✨" : `Crear ${state.count==="1"?"1 foto":state.count+" fotos"} ✨`; }
 function showErr(m){ $("err").textContent = m; }
 
 async function post(path, payload){
   const r = await fetch(path,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(payload)});
   const j = await r.json().catch(()=>({error:"Respuesta no válida del servidor"}));
+  if(r.status===403) $("upsell").style.display="block";
   if(!r.ok) throw new Error(j.error||"Error");
   return j;
 }
@@ -290,9 +342,12 @@ $("go").onclick = async () => {
   if(!state.img || state.busy) return;
   state.busy = true; updateBtn(); showErr("");
   const codigo = $("code").value.trim(); try{ localStorage.setItem("em_code", codigo); }catch{}
-  const base = { imagen: state.img, mime: state.mime, detalles: $("det").value, codigo };
+  const base = { imagen: state.img, mime: state.mime, detalles: $("det").value, codigo, marca: marca.value };
   $("empty").style.display = "none";
-  const grid = $("grid"), n = Number(state.count), ratio = state.format.replace(":"," / ");
+  const grid = $("grid"), ratio = state.format.replace(":"," / ");
+  const others = STYLES.map(x=>x[0]).filter(x=>x!==state.style).sort(()=>Math.random()-.5);
+  const jobs = state.mode==="campana" ? [state.style, others[0], others[1]] : Array(Number(state.count)).fill(state.style);
+  const n = jobs.length;
   const slots = Array.from({length:n}, () => { const d=document.createElement("div"); d.className="res"; d.innerHTML=`<div class="skel" style="aspect-ratio:${ratio}">Creando…</div>`; grid.prepend(d); return d; });
   const ficha = $("ficha");
   const fichaP = post("/api/ficha", base).then(f => {
@@ -303,9 +358,10 @@ $("go").onclick = async () => {
   let ok = 0, lastErr = "";
   await Promise.all(slots.map(async (slot, i) => {
     try{
-      const r = await post("/api/generate", { ...base, estilo: state.style, formato: state.format });
+      const r = await post("/api/generate", { ...base, estilo: jobs[i], formato: state.format });
       const src = `data:${r.mime};base64,${r.imagen}`;
-      slot.innerHTML = `<img src="${src}" alt="Foto generada"><div class="dl"><a class="btn btn-o" download="estudio-moda-${Date.now()}-${i+1}.png" href="${src}">Descargar</a></div>`;
+      slot.innerHTML = `<img src="${src}" alt="Foto generada"><div class="dl"><button class="btn btn-g vbtn" style="background:rgba(0,0,0,.6)">🎬 Vídeo</button><a class="btn btn-o" download="estudio-moda-${Date.now()}-${i+1}.png" href="${src}">Descargar</a></div>`;
+      slot.querySelector(".vbtn").onclick = () => makeVideo(src, slot);
       ok++;
     }catch(e){ lastErr = e.message; slot.remove(); }
   }));
@@ -313,6 +369,35 @@ $("go").onclick = async () => {
   if(!ok){ showErr(lastErr || "No se pudo crear la foto."); if(!grid.children.length) $("empty").style.display="flex"; }
   state.busy = false; updateBtn();
 };
+async function toJpeg(src){
+  const im = new Image(); im.src = src; await im.decode();
+  const s = Math.min(1, 1280/Math.max(im.width, im.height));
+  const c = document.createElement("canvas"); c.width=Math.round(im.width*s); c.height=Math.round(im.height*s);
+  c.getContext("2d").drawImage(im,0,0,c.width,c.height);
+  return c.toDataURL("image/jpeg",.9).split(",")[1];
+}
+async function makeVideo(src, after){
+  showErr("");
+  const box = document.createElement("div"); box.className="vid";
+  box.innerHTML = `<div class="skel">Creando tu vídeo 9:16…<br>Puede tardar 1-3 minutos</div>`;
+  after.after(box);
+  try{
+    const codigo = $("code").value.trim();
+    const r = await post("/api/video", { imagen: await toJpeg(src), mime:"image/jpeg", movimiento: state.move, detalles: $("det").value, codigo });
+    let url;
+    if(r.inline){ url = URL.createObjectURL(await (await fetch(`data:${r.mime};base64,${r.video}`)).blob()); }
+    else {
+      for(let i=0;i<60;i++){
+        const f = await fetch(`/api/video-archivo?id=${encodeURIComponent(r.archivo)}`);
+        if(f.status===200){ url = URL.createObjectURL(await f.blob()); break; }
+        if(f.status!==202){ const j = await f.json().catch(()=>({})); throw new Error(j.error||"No se pudo descargar el vídeo"); }
+        await new Promise(ok=>setTimeout(ok,4000));
+      }
+      if(!url) throw new Error("El vídeo tardó demasiado. Prueba otra vez.");
+    }
+    box.innerHTML = `<video src="${url}" controls playsinline loop autoplay muted></video><div class="dl"><a class="btn btn-o" download="estudio-moda-video-${Date.now()}.mp4" href="${url}">Descargar</a></div>`;
+  }catch(e){ box.remove(); showErr(e.message); }
+}
 document.addEventListener("click", e => { const b=e.target.closest(".copy"); if(!b) return; navigator.clipboard?.writeText(b.dataset.t).then(()=>{ b.textContent="¡Copiado!"; setTimeout(()=>b.textContent="Copiar",1500); }); });
 </script>
 </body>
