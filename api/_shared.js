@@ -42,7 +42,7 @@ export function apiKey() {
 export async function gemini(model, payload) {
   const vertex = process.env.VERTEX_API_KEY;
   const url = vertex
-    ? `https://aiplatform.googleapis.com/v1/publishers/google/models/${model}:generateContent`
+    ? `https://aiplatform.googleapis.com/v1/projects/${process.env.VERTEX_PROJECT || "mundo-reinvencion"}/locations/global/publishers/google/models/${model}:generateContent`
     : `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
   const body = { ...payload, contents: (payload.contents || []).map((c) => ({ role: "user", ...c })) };
   const r = await fetch(url, {
