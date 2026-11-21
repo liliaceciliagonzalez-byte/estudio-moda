@@ -18,7 +18,7 @@ const STYLES = {
 };
 const RATIOS = ["3:4", "4:5", "9:16", "1:1"];
 const MODEL_LOCK =
-  "The FIRST image is the garment. The SECOND image is the model: the person wearing the garment must be exactly this person (same face, facial features, skin tone, hair and approximate body type). Keep her identity identical and natural.";
+  "The FIRST image is the garment. The SECOND image is the model. The person wearing the garment MUST be the exact same person as in the second image: identical face shape, eyes, nose, lips, eyebrows, skin tone, age, hair color and hairstyle, and approximate body type. Do not beautify, slim, age or change her face in any way. Face clearly visible and recognizable. Identity preservation is the top priority.";
 export const config = { maxDuration: 120 };
 
 export default async function handler(req, res) {
@@ -34,13 +34,22 @@ export default async function handler(req, res) {
     const prompt = [GARMENT_LOCK, modelo ? MODEL_LOCK : "", STYLES[estilo], marca ? `Brand style to respect (in Spanish): ${String(marca).slice(0, 400)}` : "", detalles ? `Extra details from the shop owner (in Spanish): ${String(detalles).slice(0, 400)}` : "", QUALITY]
       .filter(Boolean).join("\n\n");
 
-    const data = await gemini(process.env.GEMINI_IMAGE_MODEL || "gemini-2.5-flash-image", {
+    const flash = process.env.GEMINI_IMAGE_MODEL || "gemini-2.5-flash-image";
+    const pro = process.env.GEMINI_FACE_MODEL || "gemini-3-pro-image-preview";
+    const run = (model) => gemini(model, {
       contents: [{ parts: [{ text: prompt }, { inline_data: { mime_type: mime, data: imagen } }, ...(modelo ? [{ inline_data: { mime_type: "image/jpeg", data: modelo } }] : [])] }],
       generationConfig: {
         responseModalities: ["IMAGE"],
         imageConfig: { aspectRatio: RATIOS.includes(formato) ? formato : "3:4" },
       },
     });
+    // Con cara de modelo usamos el modelo Pro, que respeta mucho mejor la identidad.
+    let data;
+    if (modelo) {
+      try { data = await run(pro); } catch (e) { data = await run(flash); }
+    } else {
+      data = await run(flash);
+    }
     const parts = data?.candidates?.[0]?.content?.parts || [];
     const img = parts.find((p) => p.inlineData || p.inline_data);
     const inline = img?.inlineData || img?.inline_data;
