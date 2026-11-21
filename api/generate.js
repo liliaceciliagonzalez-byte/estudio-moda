@@ -28,10 +28,14 @@ export default async function handler(req, res) {
     const denied = checkAccess(req, body, "foto");
     if (denied) return res.status(403).json({ error: denied });
 
-    const { imagen, mime = "image/jpeg", estilo, formato = "3:4", detalles = "", marca = "", modelo = "" } = body;
+    const { imagen, mime = "image/jpeg", estilo, formato = "3:4", detalles = "", marca = "", modelo = "", color = "" } = body;
     if (!imagen || !STYLES[estilo]) return res.status(400).json({ error: "Falta la foto de la prenda o el estilo." });
 
-    const prompt = [GARMENT_LOCK, modelo ? MODEL_LOCK : "", STYLES[estilo], marca ? `Brand style to respect (in Spanish): ${String(marca).slice(0, 400)}` : "", detalles ? `Extra details from the shop owner (in Spanish): ${String(detalles).slice(0, 400)}` : "", QUALITY]
+    const colorTxt = String(color).trim().slice(0, 60);
+    const lock = colorTxt
+      ? `Use the exact garment from the reference image (same cut, length, fabric texture, buttons, seams and every design detail) but change its color to: ${colorTxt}. The new color must look natural and realistic on the fabric, with correct shadows and highlights. Only the color changes.`
+      : GARMENT_LOCK;
+    const prompt = [lock, modelo ? MODEL_LOCK : "", STYLES[estilo], marca ? `Brand style to respect (in Spanish): ${String(marca).slice(0, 400)}` : "", detalles ? `Extra details from the shop owner (in Spanish): ${String(detalles).slice(0, 400)}` : "", QUALITY]
       .filter(Boolean).join("\n\n");
 
     const flash = process.env.GEMINI_IMAGE_MODEL || "gemini-2.5-flash-image";
