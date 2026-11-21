@@ -37,11 +37,18 @@ export function apiKey() {
   return k;
 }
 
+// Si existe VERTEX_API_KEY, las fotos y fichas se pagan con los créditos de Google Cloud (Vertex AI).
+// Para volver a AI Studio basta con borrar VERTEX_API_KEY en Vercel.
 export async function gemini(model, payload) {
-  const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+  const vertex = process.env.VERTEX_API_KEY;
+  const url = vertex
+    ? `https://aiplatform.googleapis.com/v1/publishers/google/models/${model}:generateContent`
+    : `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
+  const body = { ...payload, contents: (payload.contents || []).map((c) => ({ role: "user", ...c })) };
+  const r = await fetch(url, {
     method: "POST",
-    headers: { "content-type": "application/json", "x-goog-api-key": apiKey() },
-    body: JSON.stringify(payload),
+    headers: { "content-type": "application/json", "x-goog-api-key": vertex || apiKey() },
+    body: JSON.stringify(body),
   });
   const data = await r.json().catch(() => ({}));
   if (r.status === 429 || /quota/i.test(data?.error?.message || "")) {
