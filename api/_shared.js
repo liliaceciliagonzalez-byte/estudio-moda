@@ -44,6 +44,9 @@ export async function gemini(model, payload) {
     body: JSON.stringify(payload),
   });
   const data = await r.json().catch(() => ({}));
+  if (r.status === 429 || /quota/i.test(data?.error?.message || "")) {
+    throw new Error("El servicio está saturado o falta activar la facturación en Google AI Studio. Prueba de nuevo en unos minutos.");
+  }
   if (!r.ok) throw new Error(data?.error?.message || `Error ${r.status} del motor de imágenes`);
   return data;
 }
