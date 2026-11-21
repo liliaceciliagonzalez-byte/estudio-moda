@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Estudio Moda · Fotos profesionales de tu ropa con IA</title>
+<meta name="description" content="Sube la foto de tu prenda y en un minuto tienes fotos con modelo listas para tu tienda, catálogo e Instagram.">
+<meta property="og:title" content="Estudio Moda · Fotos de moda con IA">
+<meta property="og:description" content="De la percha a la foto editorial en un minuto. Sin fotógrafo, sin modelo, sin estudio.">
+<meta property="og:image" content="https://d2ol7oe51mr4n9.cloudfront.net/user_39PtRCfS4IFGGDepAcRr4FCvkJZ/b88b2a9c-9284-45aa-8af1-265bab56dc3a.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#121110;--card:#1c1a18;--line:#2e2a26;--cream:#F3E9DC;--muted:#b9ad9f;--orange:#FF6600;--turq:#19C3C0}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--cream);font-family:Inter,system-ui,sans-serif;line-height:1.5}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1140px;margin:0 auto;padding:0 20px}
+nav{position:sticky;top:0;z-index:20;background:rgba(18,17,16,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{font-family:Anton;font-size:24px;letter-spacing:.5px}.logo b{color:var(--orange);font-weight:400}.logo i{color:var(--turq);font-style:normal}
+.links{display:flex;gap:26px;font-size:14px;color:var(--muted)}.links a:hover{color:var(--cream)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:999px;padding:13px 24px;font:600 15px Inter;cursor:pointer;transition:.2s}
+.btn-o{background:var(--orange);color:#1a0d00}.btn-o:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.btn-g{background:transparent;color:var(--cream);border:1px solid var(--line)}.btn-g:hover{border-color:var(--turq);color:var(--turq)}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.kicker{font-family:'DM Serif Display';font-size:22px;color:var(--turq)}
+h1,h2{font-family:Anton;font-weight:400;line-height:1;text-transform:uppercase}
+h1{font-size:clamp(46px,7vw,86px)}h1 em,h2 em{font-family:'DM Serif Display';font-style:italic;text-transform:none;color:var(--orange)}
+h2{font-size:clamp(34px,5vw,56px);margin:6px 0 14px}
+.lead{color:var(--muted);font-size:18px;max-width:560px}
+section{padding:80px 0}
+.hero{padding:60px 0 40px}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center}
+.hero-img{border-radius:24px;overflow:hidden;border:1px solid var(--line);position:relative}
+.hero-img img{width:100%;display:block}
+.tag{position:absolute;bottom:14px;padding:6px 14px;border-radius:999px;font-size:13px;font-weight:600;background:rgba(0,0,0,.65)}
+.tag.a{left:14px}.tag.b{right:14px;color:var(--turq)}
+.cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+.mini{font-size:13px;color:var(--muted);margin-top:12px}
+/* STUDIO */
+#crear{background:linear-gradient(180deg,#171513,#121110)}
+.studio{display:grid;grid-template-columns:380px 1fr;gap:24px;margin-top:30px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:20px}
+.drop{border:1.5px dashed #5a5047;border-radius:16px;min-height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:8px;cursor:pointer;padding:16px;transition:.2s;position:relative;overflow:hidden}
+.drop:hover,.drop.over{border-color:var(--orange);background:rgba(255,102,0,.05)}
+.drop img{max-height:260px;max-width:100%;border-radius:10px}
+.drop .x{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.7);border:0;color:#fff;border-radius:999px;width:30px;height:30px;cursor:pointer;font-size:16px}
+.lbl{font-size:13px;font-weight:600;color:var(--muted);margin:18px 0 8px;text-transform:uppercase;letter-spacing:.06em}
+.styles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.st{border:2px solid transparent;border-radius:12px;overflow:hidden;cursor:pointer;background:#000;position:relative;padding:0}
+.st img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block;opacity:.85}
+.st span{position:absolute;left:0;right:0;bottom:0;font-size:11px;font-weight:600;padding:14px 4px 5px;background:linear-gradient(transparent,rgba(0,0,0,.85));color:var(--cream)}
+.st.on{border-color:var(--orange)}.st.on img{opacity:1}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line);background:transparent;color:var(--cream);border-radius:999px;padding:8px 14px;font:500 13px Inter;cursor:pointer}
+.chip.on{border-color:var(--turq);color:var(--turq);background:rgba(25,195,192,.08)}
+textarea,input[type=text]{width:100%;background:#141210;border:1px solid var(--line);color:var(--cream);border-radius:12px;padding:12px;font:14px Inter;resize:vertical}
+textarea:focus,input:focus{outline:none;border-color:var(--turq)}
+.go{width:100%;margin-top:20px;padding:16px}
+.err{color:#ff8a8a;font-size:14px;margin-top:10px;min-height:20px}
+.results{min-height:560px;display:flex;flex-direction:column;gap:18px}
+.empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--muted);gap:10px}
+.empty .ph{display:flex;gap:10px;opacity:.55}.empty .ph img{width:110px;border-radius:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.res{background:#000;border-radius:16px;overflow:hidden;border:1px solid var(--line);position:relative}
+.res img{width:100%;display:block}
+.res .dl{position:absolute;right:10px;bottom:10px}
+.res .dl .btn{padding:8px 14px;font-size:13px}
+.skel{aspect-ratio:3/4;background:linear-gradient(100deg,#1c1a18 30%,#2a2622 50%,#1c1a18 70%);background-size:200% 100%;animation:sh 1.3s infinite;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px}
+@keyframes sh{to{background-position:-200% 0}}
+.ficha{background:#141210;border:1px solid var(--line);border-radius:16px;padding:18px;display:none}
+.ficha h3{font-family:'DM Serif Display';font-weight:400;font-size:26px;color:var(--orange);margin-bottom:6px}
+.fi{margin-top:12px}.fi b{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--turq);margin-bottom:3px}
+.fi p{color:var(--cream);font-size:14px;white-space:pre-wrap}
+.copy{float:right;background:none;border:0;color:var(--muted);cursor:pointer;font-size:12px}.copy:hover{color:var(--turq)}
+/* sections */
+.ba{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:30px}
+.ba figure{border-radius:18px;overflow:hidden;border:1px solid var(--line);background:var(--card)}
+.ba img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block}
+.ba figcaption{padding:12px 14px;font-size:14px;color:var(--muted)}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:30px}
+.step{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:26px}
+.step .n{font-family:Anton;font-size:54px;color:var(--orange);line-height:1}
+.step h3{font-family:'DM Serif Display';font-weight:400;font-size:24px;margin:8px 0}
+.step p{color:var(--muted);font-size:15px}
+.feat{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:30px}
+.f{border:1px solid var(--line);border-radius:18px;padding:20px}
+.f .ic{font-size:26px}.f h4{margin:10px 0 4px;font-size:16px}.f p{color:var(--muted);font-size:14px}
+.soon{font-size:11px;color:var(--turq);border:1px solid var(--turq);border-radius:999px;padding:1px 8px;margin-left:6px}
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:30px}
+.plan{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:28px;display:flex;flex-direction:column;gap:12px}
+.plan.hot{border-color:var(--orange);box-shadow:0 0 0 1px var(--orange) inset}
+.plan .p{font-family:Anton;font-size:48px}.plan .p small{font:500 15px Inter;color:var(--muted)}
+.plan ul{list-style:none;color:var(--muted);font-size:15px;display:flex;flex-direction:column;gap:7px;flex:1}
+.plan li:before{content:"✓ ";color:var(--turq)}
+.faq{margin-top:26px;display:flex;flex-direction:column;gap:10px}
+details{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 20px}
+summary{cursor:pointer;font-weight:600}details p{color:var(--muted);margin-top:8px}
+.final{text-align:center;border:1px solid var(--line);border-radius:28px;padding:56px 20px;background:radial-gradient(circle at 50% 0,rgba(255,102,0,.18),transparent 60%)}
+footer{border-top:1px solid var(--line);padding:30px 0;color:var(--muted);font-size:14px}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+@media(max-width:900px){.hero-grid,.studio,.steps,.plans,.ba{grid-template-columns:1fr}.feat{grid-template-columns:1fr 1fr}.links{display:none}}
+</style>
+</head>
+<body>
+<nav><div class="wrap">
+  <a class="logo" href="#">ESTUDIO <b>MODA</b> <i>·</i></a>
+  <div class="links"><a href="#crear">Crear</a><a href="#como">Cómo funciona</a><a href="#precios">Precios</a><a href="#faq">Preguntas</a></div>
+  <a class="btn btn-o" href="#crear">Probar gratis</a>
+</div></nav>
+
+<header class="hero"><div class="wrap hero-grid">
+  <div>
+    <div class="kicker">Para boutiques y marcas de moda</div>
+    <h1>Crea contenido <em>como una profesional</em></h1>
+    <p class="lead">Sube la foto de tu prenda —en percha o sobre la mesa— y en un minuto tienes fotos editoriales con modelo, descripción y caption listos para vender.</p>
+    <div class="cta-row"><a class="btn btn-o" href="#crear">Subir mi prenda</a><a class="btn btn-g" href="#como">Ver cómo funciona</a></div>
+    <p class="mini">Sin fotógrafo · Sin modelo · Sin estudio</p>
+  </div>
+  <div class="hero-img">
+    <img src="https://d2ol7oe51mr4n9.cloudfront.net/user_39PtRCfS4IFGGDepAcRr4FCvkJZ/b88b2a9c-9284-45aa-8af1-265bab56dc3a.jpg" alt="Antes: prenda en percha. Después: foto editorial con modelo">
+    <span class="tag a">Antes: foto con el móvil</span><span class="tag b">Después: en 1 minuto</span>
+  </div>
+</div></header>
+
+<section id="crear"><div class="wrap">
+  <div class="kicker">Tu estudio</div>
+  <h2>Sube tu prenda y <em>elige el estilo</em></h2>
+  <div class="studio">
+    <div class="panel">
+      <div class="drop" id="drop">
+        <input type="file" id="file" accept="image/*" hidden>
+        <div id="dropEmpty"><div style="font-size:34px">📸</div><b>Sube la foto de tu prenda</b><div class="mini">En percha, sobre la mesa o en maniquí · JPG o PNG</div></div>
+      </div>
+      <div class="lbl">Estilo</div>
+      <div class="styles" id="styles"></div>
+      <div class="lbl">Formato</div>
+      <div class="chips" id="formats"></div>
+      <div class="lbl">Fotos</div>
+      <div class="chips" id="counts"></div>
+      <div class="lbl">Detalles (opcional)</div>
+      <textarea id="det" rows="2" placeholder="Ej.: modelo morena de 40 años, tacones nude, fondo rosa suave"></textarea>
+      <div id="codeBox" style="display:none"><div class="lbl">Código de acceso</div><input type="text" id="code" placeholder="Tu código de plan"></div>
+      <button class="btn btn-o go" id="go" disabled>Sube tu prenda primero</button>
+      <div class="err" id="err"></div>
+    </div>
+    <div class="panel results" id="results">
+      <div class="empty" id="empty">
+        <div class="ph" id="ph"></div>
+        <b style="color:var(--cream);font-size:18px">Aquí aparecerán tus fotos</b>
+        <span>Y también el nombre, la descripción y el caption de tu producto.</span>
+      </div>
+      <div class="grid" id="grid"></div>
+      <div class="ficha" id="ficha"></div>
+    </div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="kicker">La transformación</div>
+  <h2>De la percha a la <em>editorial</em> en un minuto</h2>
+  <div class="ba" id="ba"></div>
+</div></section>
+
+<section id="como"><div class="wrap">
+  <div class="kicker">Así de fácil</div>
+  <h2>Cómo funciona <em>en 3 pasos</em></h2>
+  <div class="steps">
+    <div class="step"><div class="n">1</div><h3>Sube tu prenda</h3><p>Una foto con el móvil basta: en percha, sobre la mesa o en maniquí.</p></div>
+    <div class="step"><div class="n">2</div><h3>Elige qué crear</h3><p>Estudio limpio, editorial, exterior, lujo, flat lay… y el formato para tu web, feed o historias.</p></div>
+    <div class="step"><div class="n">3</div><h3>Descarga y publica</h3><p>Fotos con modelo, nombre, descripción y caption listos para vender.</p></div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="kicker">Todo en un lugar</div>
+  <h2>Tu equipo creativo <em>completo</em></h2>
+  <div class="feat">
+    <div class="f"><div class="ic">👗</div><h4>Fotos de moda</h4><p>Tu prenda en 9 estilos profesionales.</p></div>
+    <div class="f"><div class="ic">💃</div><h4>Modelos IA</h4><p>Elige cómo quieres a la modelo en “Detalles”.</p></div>
+    <div class="f"><div class="ic">✍️</div><h4>Textos de producto</h4><p>Nombre, descripción, estilismo y caption.</p></div>
+    <div class="f"><div class="ic">📱</div><h4>Para redes</h4><p>Formatos de feed, historias y marketplace.</p></div>
+    <div class="f"><div class="ic">🛍️</div><h4>Campañas</h4><p>Mismo look, varias escenas para tu lanzamiento.</p></div>
+    <div class="f"><div class="ic">🗂️</div><h4>Catálogos</h4><p>Fondos coherentes para toda tu colección.</p></div>
+    <div class="f"><div class="ic">🎬</div><h4>Vídeo 9:16 <span class="soon">pronto</span></h4><p>Tu prenda en movimiento.</p></div>
+    <div class="f"><div class="ic">📣</div><h4>Anuncios <span class="soon">pronto</span></h4><p>Creatividades listas para Meta.</p></div>
+  </div>
+</div></section>
+
+<section id="precios"><div class="wrap">
+  <div class="kicker">Planes</div>
+  <h2>Empieza <em>gratis</em></h2>
+  <div class="plans">
+    <div class="plan"><b>Gratis</b><div class="p">0 €</div><ul><li>1 ficha completa</li><li>Foto + nombre + descripción + caption</li><li>Sin tarjeta</li></ul><a class="btn btn-g" href="#crear">Probar ahora</a></div>
+    <div class="plan hot"><b>Starter</b><div class="p">29 € <small>/mes</small></div><ul><li>75 fichas al mes</li><li>Todos los estilos y formatos</li><li>Los créditos que no uses pasan al mes siguiente</li><li>Cancela cuando quieras</li></ul><a class="btn btn-o" href="https://ig.me/m/lilia0908" target="_blank" rel="noopener">Quiero Starter</a></div>
+    <div class="plan"><b>Growth</b><div class="p">69 € <small>/mes</small></div><ul><li>200 fichas al mes</li><li>Ideal para catálogos y campañas</li><li>Soporte prioritario</li></ul><a class="btn btn-g" href="https://ig.me/m/lilia0908" target="_blank" rel="noopener">Quiero Growth</a></div>
+  </div>
+</div></section>
+
+<section id="faq"><div class="wrap">
+  <div class="kicker">Dudas</div>
+  <h2>Preguntas <em>frecuentes</em></h2>
+  <div class="faq">
+    <details><summary>¿Qué foto tengo que subir?</summary><p>Una foto clara de la prenda completa, con buena luz. Sirve en percha, sobre la mesa o en maniquí.</p></details>
+    <details><summary>¿La prenda sale igual?</summary><p>La IA mantiene color, tejido, estampado y detalles. Si algo no queda perfecto, vuelve a generar o añade indicaciones en “Detalles”.</p></details>
+    <details><summary>¿Puedo usar las fotos en mi tienda y en anuncios?</summary><p>Sí, las fotos son para que las uses en tu web, redes, catálogos y publicidad.</p></details>
+    <details><summary>¿Necesito saber de diseño?</summary><p>No. Subes, eliges estilo y descargas.</p></details>
+    <details><summary>¿Cómo contrato un plan?</summary><p>Escríbenos por Instagram y te damos tu código de acceso al momento.</p></details>
+  </div>
+</div></section>
+
+<section><div class="wrap"><div class="final">
+  <div class="kicker">Tu ropa merece fotos que vendan</div>
+  <h2>Empieza tu prueba <em>gratis hoy</em></h2>
+  <a class="btn btn-o" href="#crear">Subir mi prenda</a>
+</div></div></section>
+
+<footer><div class="wrap"><span>© 2026 Estudio Moda · by Lili@0908</span><a href="https://instagram.com/lilia0908" target="_blank" rel="noopener">Instagram @lilia0908</a></div></footer>
+
+<script>
+const IMG = id => `https://d2ol7oe51mr4n9.cloudfront.net/user_39PtRCfS4IFGGDepAcRr4FCvkJZ/${id}.jpg`;
+const STYLES = [
+  ["estudio-limpio","Estudio limpio","17cd55a7-5d4a-45ef-8838-a5acfc4b8237"],
+  ["editorial","Editorial","6cdb40e9-fa74-4191-8e29-6604227ec1bd"],
+  ["exterior-calido","Exterior cálido","ec81ff82-5733-4a44-a795-a1a167f2bd26"],
+  ["marmol-lujo","Mármol de lujo","5708b4e7-c25b-4896-8347-54d49bbf39d6"],
+  ["editorial-premium","Editorial premium","bdb32eb2-fd48-406a-945b-23318402f3e5"],
+  ["modelo-casual","Modelo casual","bf4a6c1f-70f5-4fd5-a1a0-aceb20565cf9"],
+  ["modelo-estudio","Modelo en estudio","521553d4-4289-4c8b-b9a2-ca5ad8d99fff"],
+  ["flat-lay","Flat lay","643161dc-6c92-4e74-b1cf-119f5f1ef989"],
+  ["lifestyle","Lifestyle","8fd9d982-7a33-476a-8e31-57bc5cb6e8c7"]
+];
+const FORMATS = [["3:4","Tienda 3:4"],["4:5","Feed 4:5"],["9:16","Historias 9:16"],["1:1","Cuadrado 1:1"]];
+const COUNTS = ["1","2","3","4"];
+const $ = id => document.getElementById(id);
+const state = { img:null, mime:"image/jpeg", style:"estudio-limpio", format:"3:4", count:"2", busy:false };
+
+// style picker
+$("styles").innerHTML = STYLES.map(([id,t,img]) => `<button class="st${id===state.style?" on":""}" data-id="${id}"><img src="${IMG(img)}" alt="${t}" loading="lazy"><span>${t}</span></button>`).join("");
+$("styles").onclick = e => { const b = e.target.closest(".st"); if(!b) return; state.style=b.dataset.id; document.querySelectorAll(".st").forEach(x=>x.classList.toggle("on",x===b)); };
+const chips = (el, items, key) => { $(el).innerHTML = items.map(([v,t]) => `<button class="chip${v===state[key]?" on":""}" data-v="${v}">${t}</button>`).join("");
+  $(el).onclick = e => { const b=e.target.closest(".chip"); if(!b) return; state[key]=b.dataset.v; $(el).querySelectorAll(".chip").forEach(x=>x.classList.toggle("on",x===b)); updateBtn(); }; };
+chips("formats", FORMATS, "format");
+chips("counts", COUNTS.map(c=>[c, c===("1")?"1 foto":`${c} fotos`]), "count");
+$("ph").innerHTML = [1,4,7].map(i=>`<img src="${IMG(STYLES[i][2])}" alt="">`).join("");
+$("ba").innerHTML = [[0,"Estudio limpio para tu tienda online"],[2,"Exterior cálido para campañas"],[7,"Flat lay para catálogos y redes"]]
+  .map(([i,c])=>`<figure><img src="${IMG(STYLES[i][2])}" alt="${c}" loading="lazy"><figcaption>${c}</figcaption></figure>`).join("");
+
+// access code box only if server needs it
+fetch("/api/config").then(r=>r.ok?r.json():null).then(c=>{ if(c?.codigo) $("codeBox").style.display="block"; }).catch(()=>{});
+try{ $("code").value = localStorage.getItem("em_code")||""; }catch{}
+
+// upload
+const drop = $("drop"), file = $("file");
+drop.onclick = e => { if(e.target.classList.contains("x")) return; file.click(); };
+drop.ondragover = e => { e.preventDefault(); drop.classList.add("over"); };
+drop.ondragleave = () => drop.classList.remove("over");
+drop.ondrop = e => { e.preventDefault(); drop.classList.remove("over"); if(e.dataTransfer.files[0]) load(e.dataTransfer.files[0]); };
+file.onchange = () => file.files[0] && load(file.files[0]);
+function load(f){
+  if(!f.type.startsWith("image/")) return showErr("Sube una imagen (JPG o PNG).");
+  const url = URL.createObjectURL(f), im = new Image();
+  im.onload = () => {
+    const max = 1280, s = Math.min(1, max/Math.max(im.width, im.height));
+    const c = document.createElement("canvas"); c.width = Math.round(im.width*s); c.height = Math.round(im.height*s);
+    const ctx = c.getContext("2d"); ctx.fillStyle="#fff"; ctx.fillRect(0,0,c.width,c.height); ctx.drawImage(im,0,0,c.width,c.height);
+    const data = c.toDataURL("image/jpeg", .9);
+    state.img = data.split(",")[1]; state.mime = "image/jpeg";
+    drop.innerHTML = `<img src="${data}" alt="Tu prenda"><button class="x" title="Quitar">✕</button>`;
+    drop.querySelector(".x").onclick = ev => { ev.stopPropagation(); reset(); };
+    drop.appendChild(file); showErr(""); updateBtn();
+  };
+  im.src = url;
+}
+function reset(){ state.img=null; drop.innerHTML = `<div id="dropEmpty"><div style="font-size:34px">📸</div><b>Sube la foto de tu prenda</b><div class="mini">En percha, sobre la mesa o en maniquí · JPG o PNG</div></div>`; drop.appendChild(file); file.value=""; updateBtn(); }
+function updateBtn(){ const b=$("go"); b.disabled = !state.img || state.busy; b.textContent = state.busy ? "Creando tus fotos…" : !state.img ? "Sube tu prenda primero" : `Crear ${state.count==="1"?"1 foto":state.count+" fotos"} ✨`; }
+function showErr(m){ $("err").textContent = m; }
+
+async function post(path, payload){
+  const r = await fetch(path,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(payload)});
+  const j = await r.json().catch(()=>({error:"Respuesta no válida del servidor"}));
+  if(!r.ok) throw new Error(j.error||"Error");
+  return j;
+}
+const esc = s => String(s??"").replace(/[&<>"]/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
+
+$("go").onclick = async () => {
+  if(!state.img || state.busy) return;
+  state.busy = true; updateBtn(); showErr("");
+  const codigo = $("code").value.trim(); try{ localStorage.setItem("em_code", codigo); }catch{}
+  const base = { imagen: state.img, mime: state.mime, detalles: $("det").value, codigo };
+  $("empty").style.display = "none";
+  const grid = $("grid"), n = Number(state.count), ratio = state.format.replace(":"," / ");
+  const slots = Array.from({length:n}, () => { const d=document.createElement("div"); d.className="res"; d.innerHTML=`<div class="skel" style="aspect-ratio:${ratio}">Creando…</div>`; grid.prepend(d); return d; });
+  const ficha = $("ficha");
+  const fichaP = post("/api/ficha", base).then(f => {
+    const row = (k,t) => f[k] ? `<div class="fi"><button class="copy" data-t="${esc(f[k])}">Copiar</button><b>${t}</b><p>${esc(f[k])}</p></div>` : "";
+    ficha.innerHTML = `<h3>${esc(f.nombre||"Tu producto")}</h3>${row("descripcion","Descripción")}${row("estilismo","Estilismo")}${row("caption","Caption")}${row("hashtags","Hashtags")}`;
+    ficha.style.display = "block";
+  }).catch(()=>{});
+  let ok = 0, lastErr = "";
+  await Promise.all(slots.map(async (slot, i) => {
+    try{
+      const r = await post("/api/generate", { ...base, estilo: state.style, formato: state.format });
+      const src = `data:${r.mime};base64,${r.imagen}`;
+      slot.innerHTML = `<img src="${src}" alt="Foto generada"><div class="dl"><a class="btn btn-o" download="estudio-moda-${Date.now()}-${i+1}.png" href="${src}">Descargar</a></div>`;
+      ok++;
+    }catch(e){ lastErr = e.message; slot.remove(); }
+  }));
+  await fichaP;
+  if(!ok){ showErr(lastErr || "No se pudo crear la foto."); if(!grid.children.length) $("empty").style.display="flex"; }
+  state.busy = false; updateBtn();
+};
+document.addEventListener("click", e => { const b=e.target.closest(".copy"); if(!b) return; navigator.clipboard?.writeText(b.dataset.t).then(()=>{ b.textContent="¡Copiado!"; setTimeout(()=>b.textContent="Copiar",1500); }); });
+</script>
+</body>
+</html>
