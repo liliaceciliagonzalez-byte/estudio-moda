@@ -165,6 +165,9 @@ details.brand summary{font-size:13px}
       <div class="chips" id="modes"></div>
       <div class="lbl">Estilo</div>
       <div class="styles" id="styles"></div>
+      <div class="lbl">Color de la prenda</div>
+      <div class="chips" id="colors"></div>
+      <input type="text" id="colorTxt" placeholder="U otro color: ej. verde esmeralda, rosa palo…" style="margin-top:8px">
       <div class="lbl">Formato</div>
       <div class="chips" id="formats"></div>
       <div class="lbl">Fotos</div>
@@ -251,6 +254,7 @@ details.brand summary{font-size:13px}
     <details><summary>¿Puedo usar las fotos en mi tienda y en anuncios?</summary><p>Sí, las fotos son para que las uses en tu web, redes, catálogos y publicidad.</p></details>
     <details><summary>¿Necesito saber de diseño?</summary><p>No. Subes, eliges estilo y descargas.</p></details>
     <details><summary>¿Puedo usar la cara de mi propia modelo?</summary><p>Sí. Sube su foto en «Tu modelo» y la prenda saldrá puesta en ella. Necesitas su permiso para usar su imagen.</p></details>
+    <details><summary>¿Puedo cambiar el color de la prenda?</summary><p>Sí. Elige un color en «Color de la prenda» o escribe el que quieras. Se mantiene el diseño y solo cambia el color.</p></details>
     <details><summary>¿Puedo hacer vídeos?</summary><p>Sí. Toca «Vídeo» en cualquier foto creada y elige el movimiento: pasarela, giro, detalle o viento. Sale en 9:16 para Reels y TikTok. Incluido en los planes de pago.</p></details>
     <details><summary>¿Qué pasa con los créditos que no uso?</summary><p>Se acumulan mes a mes mientras tu plan esté activo.</p></details>
     <details><summary>¿Las imágenes que creo son mías?</summary><p>Sí. Fotos, vídeos, nombres, descripciones y captions son tuyos.</p></details>
@@ -282,10 +286,11 @@ const STYLES = [
 ];
 const FORMATS = [["3:4","Tienda 3:4"],["4:5","Feed 4:5"],["9:16","Historias 9:16"],["1:1","Cuadrado 1:1"]];
 const COUNTS = ["1","2","3","4"];
+const COLORS = [["","Original"],["negro","Negro"],["blanco","Blanco"],["beige","Beige"],["rojo","Rojo"],["azul marino","Azul marino"],["verde oliva","Verde"],["rosa palo","Rosa"],["camel","Camel"]];
 const MODES = [["foto","Fotos"],["campana","Campaña (3 escenas)"]];
 const MOVES = [["pasarela","Pasarela"],["giro","Giro 360°"],["detalle","Detalle"],["viento","Con brisa"]];
 const $ = id => document.getElementById(id);
-const state = { img:null, mime:"image/jpeg", style:"estudio-limpio", format:"3:4", count:"2", mode:"foto", move:"pasarela", busy:false };
+const state = { img:null, mime:"image/jpeg", style:"estudio-limpio", format:"3:4", count:"2", mode:"foto", move:"pasarela", color:"", busy:false };
 
 // style picker
 $("styles").innerHTML = STYLES.map(([id,t,img]) => `<button class="st${id===state.style?" on":""}" data-id="${id}"><img src="${IMG(img)}" alt="${t}" loading="lazy"><span>${t}</span></button>`).join("");
@@ -294,6 +299,9 @@ const chips = (el, items, key) => { $(el).innerHTML = items.map(([v,t]) => `<but
   $(el).onclick = e => { const b=e.target.closest(".chip"); if(!b) return; state[key]=b.dataset.v; $(el).querySelectorAll(".chip").forEach(x=>x.classList.toggle("on",x===b)); updateBtn(); }; };
 chips("formats", FORMATS, "format");
 chips("modes", MODES, "mode");
+chips("colors", COLORS, "color");
+$("colors").addEventListener("click", () => { $("colorTxt").value = ""; });
+$("colorTxt").oninput = () => { state.color = $("colorTxt").value.trim(); $("colors").querySelectorAll(".chip").forEach(x=>x.classList.toggle("on", x.dataset.v==="" && !state.color)); };
 chips("moves", MOVES, "move");
 const marca = $("marca");
 try{ marca.value = localStorage.getItem("em_marca")||""; }catch{}
@@ -388,7 +396,7 @@ $("go").onclick = async () => {
   let ok = 0, lastErr = "";
   await Promise.all(slots.map(async (slot, i) => {
     try{
-      const r = await post("/api/generate", { ...base, estilo: jobs[i], formato: state.format, ...(state.modelo ? { modelo: state.modelo } : {}) });
+      const r = await post("/api/generate", { ...base, estilo: jobs[i], formato: state.format, color: state.color, ...(state.modelo ? { modelo: state.modelo } : {}) });
       const src = `data:${r.mime};base64,${r.imagen}`;
       slot.innerHTML = `<img src="${src}" alt="Foto generada"><div class="dl"><button class="btn btn-g vbtn" style="background:rgba(0,0,0,.6)">🎬 Vídeo</button><a class="btn btn-o" download="estudio-moda-${Date.now()}-${i+1}.png" href="${src}">Descargar</a></div>`;
       slot.querySelector(".vbtn").onclick = () => makeVideo(src, slot);
