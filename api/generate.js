@@ -35,12 +35,12 @@ export default async function handler(req, res) {
       .filter(Boolean).join("\n\n");
 
     const flash = process.env.GEMINI_IMAGE_MODEL || "gemini-2.5-flash-image";
-    const pro = process.env.GEMINI_FACE_MODEL || "gemini-3-pro-image-preview";
+    const pro = process.env.GEMINI_FACE_MODEL || "gemini-3-pro-image";
     const run = (model) => gemini(model, {
       contents: [{ parts: [{ text: prompt }, { inline_data: { mime_type: mime, data: imagen } }, ...(modelo ? [{ inline_data: { mime_type: "image/jpeg", data: modelo } }] : [])] }],
       generationConfig: {
         responseModalities: ["IMAGE"],
-        imageConfig: { aspectRatio: RATIOS.includes(formato) ? formato : "3:4" },
+        imageConfig: { aspectRatio: RATIOS.includes(formato) ? formato : "3:4", ...(model === pro ? { imageSize: "2K" } : {}) },
       },
     });
     // Con cara de modelo usamos el modelo Pro, que respeta mucho mejor la identidad.
