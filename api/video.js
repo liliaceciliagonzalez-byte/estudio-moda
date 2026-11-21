@@ -47,7 +47,7 @@ export default async function handler(req, res) {
         ],
         response_format: { type: "video", aspect_ratio: "9:16", delivery: "uri" },
         background: false,
-        store: false,
+        store: true,
         stream: false,
       }),
     });
