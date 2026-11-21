@@ -1,10 +1,10 @@
-import { checkAccess, gemini } from "./_shared.js";
+import { checkAccess, gemini, readBody } from "./_shared.js";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).json({ error: "Método no permitido" });
   try {
-    const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body || {};
-    const denied = checkAccess(req, body);
+    const body = readBody(req);
+    const denied = checkAccess(req, body, "ficha");
     if (denied) return res.status(403).json({ error: denied });
     const { imagen, mime = "image/jpeg", detalles = "" } = body;
     if (!imagen) return res.status(400).json({ error: "Falta la foto de la prenda." });
