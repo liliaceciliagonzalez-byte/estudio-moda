@@ -106,6 +106,8 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
 .vid video{width:100%;display:block;aspect-ratio:9/16;background:#000}
 .vid .dl{position:absolute;right:10px;bottom:10px}
 .vid .skel{aspect-ratio:9/16;text-align:center;padding:20px}
+.drop.small{min-height:120px;margin-top:8px}
+.drop.small img{max-height:150px}
 .legal{font-size:11px;color:var(--muted);margin-top:8px}
 .upsell{display:none;margin-top:12px;border:1px solid var(--orange);border-radius:14px;padding:14px;font-size:14px}
 .upsell a{color:var(--orange);font-weight:600}
@@ -152,6 +154,11 @@ details.brand summary{font-size:13px}
       <div class="drop" id="drop">
         <input type="file" id="file" accept="image/*" hidden>
         <div id="dropEmpty"><div style="font-size:34px">📸</div><b>Sube la foto de tu prenda</b><div class="mini">En percha, sobre la mesa o en maniquí · JPG o PNG</div></div>
+      </div>
+      <div class="lbl">Tu modelo (opcional)</div>
+      <div class="drop small" id="drop2">
+        <input type="file" id="file2" accept="image/*" hidden>
+        <div><div style="font-size:26px">👩🏽</div><b>Sube la cara de tu modelo</b><div class="mini">Saldrá con esa cara en todas las fotos. Si no subes nada, usamos una modelo IA.</div></div>
       </div>
       <div class="legal">Al subir fotos confirmas que tienes derecho a usarlas y el permiso de las personas que aparezcan.</div>
       <div class="lbl">Qué crear</div>
@@ -207,7 +214,7 @@ details.brand summary{font-size:13px}
   <p class="lead">Creación de vídeos incluida en todos los planes de pago.</p>
   <div class="feat">
     <div class="f"><div class="ic">👗</div><h4>Fotos de moda</h4><p>Tu prenda en 9 estilos profesionales.</p></div>
-    <div class="f"><div class="ic">💃</div><h4>Modelos IA</h4><p>Elige cómo quieres a la modelo en “Detalles”.</p></div>
+    <div class="f"><div class="ic">💃</div><h4>Tu propia modelo</h4><p>Sube su cara y sale en todas tus fotos, o usa una modelo IA.</p></div>
     <div class="f"><div class="ic">✍️</div><h4>Textos de producto</h4><p>Nombre, descripción, estilismo y caption.</p></div>
     <div class="f"><div class="ic">📱</div><h4>Para redes</h4><p>Formatos de feed, historias y marketplace.</p></div>
     <div class="f"><div class="ic">🛍️</div><h4>Campañas de producto</h4><p>Una prenda, 3 escenas distintas de una vez.</p></div>
@@ -243,6 +250,7 @@ details.brand summary{font-size:13px}
     <details><summary>¿La prenda sale igual?</summary><p>La IA mantiene color, tejido, estampado y detalles. Si algo no queda perfecto, vuelve a generar o añade indicaciones en “Detalles”.</p></details>
     <details><summary>¿Puedo usar las fotos en mi tienda y en anuncios?</summary><p>Sí, las fotos son para que las uses en tu web, redes, catálogos y publicidad.</p></details>
     <details><summary>¿Necesito saber de diseño?</summary><p>No. Subes, eliges estilo y descargas.</p></details>
+    <details><summary>¿Puedo usar la cara de mi propia modelo?</summary><p>Sí. Sube su foto en «Tu modelo» y la prenda saldrá puesta en ella. Necesitas su permiso para usar su imagen.</p></details>
     <details><summary>¿Puedo hacer vídeos?</summary><p>Sí. Toca «Vídeo» en cualquier foto creada y elige el movimiento: pasarela, giro, detalle o viento. Sale en 9:16 para Reels y TikTok. Incluido en los planes de pago.</p></details>
     <details><summary>¿Qué pasa con los créditos que no uso?</summary><p>Se acumulan mes a mes mientras tu plan esté activo.</p></details>
     <details><summary>¿Las imágenes que creo son mías?</summary><p>Sí. Fotos, vídeos, nombres, descripciones y captions son tuyos.</p></details>
@@ -325,6 +333,28 @@ function load(f){
   };
   im.src = url;
 }
+const drop2 = $("drop2"), file2 = $("file2");
+const drop2Empty = drop2.innerHTML;
+drop2.onclick = e => { if(e.target.classList.contains("x")) return; file2.click(); };
+drop2.ondragover = e => { e.preventDefault(); drop2.classList.add("over"); };
+drop2.ondragleave = () => drop2.classList.remove("over");
+drop2.ondrop = e => { e.preventDefault(); drop2.classList.remove("over"); if(e.dataTransfer.files[0]) loadModel(e.dataTransfer.files[0]); };
+file2.onchange = () => file2.files[0] && loadModel(file2.files[0]);
+function loadModel(f){
+  if(!f.type.startsWith("image/")) return showErr("Sube una imagen (JPG o PNG).");
+  const im = new Image();
+  im.onload = () => {
+    const s = Math.min(1, 1024/Math.max(im.width, im.height));
+    const c = document.createElement("canvas"); c.width = Math.round(im.width*s); c.height = Math.round(im.height*s);
+    c.getContext("2d").drawImage(im,0,0,c.width,c.height);
+    const data = c.toDataURL("image/jpeg", .9);
+    state.modelo = data.split(",")[1];
+    drop2.innerHTML = `<img src="${data}" alt="Tu modelo"><button class="x" title="Quitar">✕</button>`;
+    drop2.querySelector(".x").onclick = ev => { ev.stopPropagation(); state.modelo = null; drop2.innerHTML = drop2Empty; drop2.appendChild(file2); file2.value=""; };
+    drop2.appendChild(file2); showErr("");
+  };
+  im.src = URL.createObjectURL(f);
+}
 function reset(){ state.img=null; drop.innerHTML = `<div id="dropEmpty"><div style="font-size:34px">📸</div><b>Sube la foto de tu prenda</b><div class="mini">En percha, sobre la mesa o en maniquí · JPG o PNG</div></div>`; drop.appendChild(file); file.value=""; updateBtn(); }
 function updateBtn(){ const b=$("go"); b.disabled = !state.img || state.busy; b.textContent = state.busy ? "Creando…" : !state.img ? "Sube tu prenda primero" : state.mode==="campana" ? "Crear campaña de 3 escenas ✨" : `Crear ${state.count==="1"?"1 foto":state.count+" fotos"} ✨`; }
 function showErr(m){ $("err").textContent = m; }
@@ -358,7 +388,7 @@ $("go").onclick = async () => {
   let ok = 0, lastErr = "";
   await Promise.all(slots.map(async (slot, i) => {
     try{
-      const r = await post("/api/generate", { ...base, estilo: jobs[i], formato: state.format });
+      const r = await post("/api/generate", { ...base, estilo: jobs[i], formato: state.format, ...(state.modelo ? { modelo: state.modelo } : {}) });
       const src = `data:${r.mime};base64,${r.imagen}`;
       slot.innerHTML = `<img src="${src}" alt="Foto generada"><div class="dl"><button class="btn btn-g vbtn" style="background:rgba(0,0,0,.6)">🎬 Vídeo</button><a class="btn btn-o" download="estudio-moda-${Date.now()}-${i+1}.png" href="${src}">Descargar</a></div>`;
       slot.querySelector(".vbtn").onclick = () => makeVideo(src, slot);
