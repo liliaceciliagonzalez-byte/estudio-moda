@@ -17,6 +17,8 @@ const STYLES = {
   "lifestyle": "Aspirational lifestyle photo: a woman wearing the garment in a bright modern apartment with plants, holding a coffee cup, soft daylight.",
 };
 const RATIOS = ["3:4", "4:5", "9:16", "1:1"];
+const MODEL_LOCK =
+  "The FIRST image is the garment. The SECOND image is the model: the person wearing the garment must be exactly this person (same face, facial features, skin tone, hair and approximate body type). Keep her identity identical and natural.";
 export const config = { maxDuration: 120 };
 
 export default async function handler(req, res) {
@@ -26,14 +28,14 @@ export default async function handler(req, res) {
     const denied = checkAccess(req, body, "foto");
     if (denied) return res.status(403).json({ error: denied });
 
-    const { imagen, mime = "image/jpeg", estilo, formato = "3:4", detalles = "", marca = "" } = body;
+    const { imagen, mime = "image/jpeg", estilo, formato = "3:4", detalles = "", marca = "", modelo = "" } = body;
     if (!imagen || !STYLES[estilo]) return res.status(400).json({ error: "Falta la foto de la prenda o el estilo." });
 
-    const prompt = [GARMENT_LOCK, STYLES[estilo], marca ? `Brand style to respect (in Spanish): ${String(marca).slice(0, 400)}` : "", detalles ? `Extra details from the shop owner (in Spanish): ${String(detalles).slice(0, 400)}` : "", QUALITY]
+    const prompt = [GARMENT_LOCK, modelo ? MODEL_LOCK : "", STYLES[estilo], marca ? `Brand style to respect (in Spanish): ${String(marca).slice(0, 400)}` : "", detalles ? `Extra details from the shop owner (in Spanish): ${String(detalles).slice(0, 400)}` : "", QUALITY]
       .filter(Boolean).join("\n\n");
 
     const data = await gemini(process.env.GEMINI_IMAGE_MODEL || "gemini-2.5-flash-image", {
-      contents: [{ parts: [{ text: prompt }, { inline_data: { mime_type: mime, data: imagen } }] }],
+      contents: [{ parts: [{ text: prompt }, { inline_data: { mime_type: mime, data: imagen } }, ...(modelo ? [{ inline_data: { mime_type: "image/jpeg", data: modelo } }] : [])] }],
       generationConfig: {
         responseModalities: ["IMAGE"],
         imageConfig: { aspectRatio: RATIOS.includes(formato) ? formato : "3:4" },
