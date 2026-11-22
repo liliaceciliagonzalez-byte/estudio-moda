@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prueba virtual con Modelo IA · Estudio Moda Lili@0908</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Anton&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b0c0f; --panel:#1b1c20; --panel2:#24252b; --line:#2f3037;
+  --txt:#f5ebdd; --mut:#9a9aa3; --turq:#19cfc3; --turq2:#0fa89e; --orange:#ff6a13; --pink:#ff4d8d;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--txt);font-family:"Inter Tight",system-ui,sans-serif;font-size:14px;overflow:hidden}
+button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit}
+.app{display:flex;flex-direction:column;height:100vh}
+
+/* banner */
+.banner{height:34px;flex:none;background:linear-gradient(90deg,#19cfc3,#7fe3da 50%,#19cfc3);color:#0b0c0f;display:flex;align-items:center;justify-content:center;gap:14px;font-weight:600;font-size:13px;position:relative}
+.banner .go{background:#0b0c0f;color:var(--turq);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700}
+.banner .x{position:absolute;right:16px;font-size:18px;color:#0b0c0f}
+.banner.hide{display:none}
+
+/* header */
+header{height:56px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 18px}
+.logo{display:flex;align-items:baseline;gap:10px;font-weight:800;font-size:22px;letter-spacing:-.5px}
+.logo .l{color:var(--txt)} .logo .at{color:var(--orange)} .logo .n{color:var(--orange)}
+.logo .eye{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--turq);margin:0 1px 3px}
+.logo small{font-size:11px;font-weight:600;color:var(--mut);letter-spacing:.3px}
+.hbtns{display:flex;gap:10px;align-items:center}
+.hb{background:var(--panel2);padding:8px 14px;border-radius:8px;font-weight:600;font-size:13px;display:flex;gap:6px;align-items:center}
+.hb.white{background:var(--txt);color:#0b0c0f;line-height:1.05;text-align:center}
+
+.main{flex:1;display:flex;min-height:0;padding:0 14px 14px 0}
+
+/* rail */
+.rail{width:64px;flex:none;display:flex;flex-direction:column;align-items:center;gap:6px;padding-top:6px}
+.ri{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#c9c9cf;position:relative}
+.ri:hover{background:var(--panel2)}
+.ri.on{background:var(--turq);color:#0b0c0f}
+.ri svg{width:20px;height:20px}
+.ri .new{position:absolute;top:-6px;right:-8px;background:var(--turq);color:#0b0c0f;font-size:9px;font-weight:800;padding:1px 5px;border-radius:6px}
+.rail .sep{width:28px;height:1px;background:var(--line);margin:4px 0}
+.rail .more{margin-top:auto;margin-bottom:6px}
+.tip{position:absolute;left:52px;background:#000;color:var(--txt);font-size:12px;padding:5px 9px;border-radius:6px;white-space:nowrap;opacity:0;pointer-events:none;transition:.15s;z-index:5}
+.ri:hover .tip{opacity:1}
+
+/* panel */
+.panel{width:470px;flex:none;background:var(--panel);border-radius:14px;display:flex;overflow:hidden}
+.tools{width:100px;flex:none;padding:12px 6px;display:flex;flex-direction:column;gap:6px;overflow:auto;border-right:1px solid #222329}
+.tool{display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px 4px;border-radius:10px;text-align:center;font-size:11.5px;line-height:1.25;color:#d6d6db;position:relative}
+.tool:hover{background:var(--panel2)}
+.tool .ic{width:46px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center}
+.tool.on .ic{background:#3a3b42;box-shadow:inset 0 0 0 1px #55565f}
+.tool .hot{position:absolute;top:4px;right:10px;background:var(--pink);color:#fff;font-size:8.5px;font-weight:800;padding:1px 4px;border-radius:4px}
+.tool svg{width:20px;height:20px}
+
+.form{flex:1;display:flex;flex-direction:column;min-width:0}
+.fscroll{flex:1;overflow:auto;padding:14px 18px}
+.ftitle{display:flex;align-items:center;gap:8px;font-weight:700;font-size:17px;margin-bottom:16px}
+.badge{font-size:10.5px;font-weight:700;background:#2b2b22;color:#f7d774;padding:3px 7px;border-radius:6px;white-space:nowrap}
+.step{position:relative;padding-left:30px;margin-bottom:18px}
+.step:before{content:"";position:absolute;left:9px;top:24px;bottom:-14px;width:1px;background:var(--line)}
+.step.last:before{display:none}
+.num{position:absolute;left:0;top:0;width:19px;height:19px;border-radius:50%;background:#33343b;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.stitle{font-weight:600;margin-bottom:12px;color:#e9e9ee}
+.drop{width:132px;height:132px;margin:0 auto;border-radius:12px;background:#2a2b31;display:flex;align-items:center;justify-content:center;font-size:26px;color:#cfcfd6;position:relative;cursor:pointer;transition:.15s;border:1.5px dashed transparent;overflow:hidden}
+.drop:hover,.drop.over{border-color:var(--turq);background:#2e3036}
+.drop .cnt{position:absolute;right:8px;bottom:6px;font-size:10px;color:var(--mut)}
+.drop img{width:100%;height:100%;object-fit:cover}
+.drop .rm{position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.7);font-size:13px;display:none;align-items:center;justify-content:center}
+.drop.has .rm{display:flex}
+.thumbs{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.thumbs .drop{width:92px;height:92px}
+.urlrow{display:flex;gap:6px;margin-top:10px}.urlrow input{flex:1;min-width:0;background:#2a2b31;border:1px solid transparent;border-radius:8px;color:var(--txt);padding:8px 10px;font:inherit;font-size:12.5px}.urlrow input:focus{outline:none;border-color:var(--turq)}.urlrow button{background:#34353b;border-radius:8px;padding:0 12px;font-weight:600;font-size:12.5px}
+.err{color:#ff8a8a;font-size:13px;margin-top:10px;text-align:center}
+.lbl{font-size:13px;color:#d6d6db;margin:16px 0 8px}
+.sel{position:relative}
+.selbtn{width:100%;background:#2a2b31;border-radius:9px;padding:11px 12px;display:flex;justify-content:space-between;align-items:center;font-weight:600;text-align:left;border:1px solid transparent}
+.sel.open .selbtn{border-color:var(--turq)}
+.sel.open .chev{transform:rotate(180deg)}
+.chev{transition:.15s;color:var(--mut)}
+.opts{position:absolute;left:0;right:0;top:calc(100% + 6px);background:#2a2b31;border-radius:10px;padding:6px;display:none;z-index:10;box-shadow:0 10px 30px rgba(0,0,0,.5);max-height:300px;overflow:auto}
+.sel.open .opts{display:block}
+.opt{padding:9px 8px;border-radius:7px;color:#d6d6db}
+.opt:hover{background:#34353c}
+.opt.on{background:var(--turq);color:#0b0c0f;font-weight:600}
+.opt.head{color:var(--turq);font-weight:600}
+.fbottom{padding:12px 18px 16px}
+.gen{width:100%;height:46px;border-radius:10px;background:#34353b;color:#77777f;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;gap:8px;transition:.15s}
+.gen.ready{background:var(--turq);color:#0b0c0f}
+.gen.ready:hover{background:#3fe0d5}
+.gen .cr{font-size:12px;opacity:.8}
+
+/* stage */
+.stage{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 30px;overflow:auto}
+.stage h1{font-size:46px;font-weight:800;letter-spacing:-1px;text-align:center;margin-bottom:18px}
+.stage p.sub{font-size:18px;color:#c8c8cf;text-align:center;max-width:720px;line-height:1.45;margin-bottom:30px}
+.demo{display:flex;align-items:center;gap:16px}
+.gcard{width:200px;text-align:center}
+.gcard .im{width:200px;height:260px;border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.gcard span{display:block;margin-top:10px;font-weight:600}
+.arrow{color:#c8c8cf}
+.res{display:flex;gap:10px}
+.res .im{width:175px;height:260px;border-radius:10px;overflow:hidden}
+.res img,.gcard img{width:100%;height:100%;object-fit:cover;display:block}
+.gcard .im{background:#f1f1f1}.res .im{background:#1b1c20}
+
+/* result view */
+.result{display:none;flex:1;width:100%;flex-direction:column;min-height:0}
+.result.on{display:flex}
+.rhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.rhead h2{font-size:18px;font-weight:700}
+.rgrid{flex:1;display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap;overflow:auto}
+.rbox{width:260px;aspect-ratio:3/4;border-radius:12px;background:var(--panel);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.rbox img{width:100%;height:100%;object-fit:cover}
+.rbox .g{position:absolute;right:10px;bottom:10px;width:70px;height:70px;border-radius:8px;border:2px solid var(--txt);object-fit:cover;background:#fff}
+.rbox .tag{position:absolute;left:10px;top:10px;background:rgba(0,0,0,.65);font-size:11px;padding:4px 8px;border-radius:6px}
+.rbox .dl{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);background:var(--turq);color:#0b0c0f;font-weight:700;padding:8px 16px;border-radius:9px;text-decoration:none;font-size:13px}
+.rerr{padding:18px;text-align:center;color:#ff8a8a;font-size:13px}
+.loader{width:42px;height:42px;border-radius:50%;border:3px solid #333;border-top-color:var(--turq);animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.bar{margin-top:14px;align-self:center;background:var(--panel);border-radius:14px;padding:10px 12px;display:flex;gap:10px;align-items:center;width:min(720px,100%)}
+.chip{background:var(--panel2);border-radius:9px;padding:8px 11px;font-weight:600;font-size:13px;display:flex;gap:6px;align-items:center;white-space:nowrap}
+.chip .lite{background:var(--orange);color:#0b0c0f;font-size:9.5px;font-weight:800;padding:1px 5px;border-radius:4px}
+.bar .grow{flex:1}
+.bar .gen{width:auto;padding:0 22px;height:40px}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:#000;border:1px solid var(--line);padding:12px 18px;border-radius:10px;opacity:0;transition:.25s;z-index:50;max-width:520px;text-align:center}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media (max-width:1100px){
+  body{overflow:auto}
+  .main{flex-direction:column;padding:0 10px 10px}
+  .rail{flex-direction:row;width:100%;justify-content:center;padding:4px 0 10px}
+  .rail .sep,.rail .more{display:none}
+  .panel{width:100%}
+  .stage{padding:30px 6px}
+  .stage h1{font-size:32px}
+  .demo{flex-wrap:wrap;justify-content:center}
+  .res .im{width:110px;height:170px}
+  .gcard,.gcard .im{width:130px}.gcard .im{height:170px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="banner" id="banner">
+    <span id="bannerTxt">Crea fotos de moda con modelo IA en segundos</span>
+    <button class="go">Empezar</button>
+    <button class="x" onclick="document.getElementById('banner').classList.add('hide')">✕</button>
+  </div>
+
+  <header>
+    <div class="logo"><span><span class="l">Lili</span><span class="at">@</span><span class="n">0908</span></span><small>ESTUDIO MODA</small></div>
+    <div class="hbtns">
+      <a class="hb" href="/" style="text-decoration:none;color:inherit">Estudio Moda</a><button class="hb">🪙 Obtener créditos</button>
+      <button class="hb">Recargar</button>
+      <button class="hb white">Iniciar<br>sesión</button>
+    </div>
+  </header>
+
+  <div class="main">
+    <nav class="rail" id="rail"></nav>
+
+    <section class="panel">
+      <div class="tools" id="tools"></div>
+      <div class="form">
+        <div class="fscroll">
+          <div class="ftitle"><span id="toolName">Prueba virtual con Modelo IA</span><span class="badge">⚡ Nano Banana Pro</span></div>
+
+          <div class="step">
+            <div class="num">1</div>
+            <div class="stitle">Ropa</div>
+            <div class="drop" id="dropG"><span class="plus">+</span><span class="cnt" id="cntG">0/1</span><button class="rm" id="rmG">✕</button></div>
+            <input type="file" id="fileG" accept="image/*" hidden>
+            <div class="urlrow"><input id="urlG" placeholder="o pega el enlace de la foto de la prenda"><button id="urlBtn">Usar</button></div>
+            <div class="lbl">Seleccionar el área de la ropa</div>
+            <div class="sel" id="sel">
+              <button class="selbtn" id="selBtn"><span id="selVal">Configurar</span><span class="chev">⌄</span></button>
+              <div class="opts" id="opts"></div>
+            </div>
+          </div>
+
+          <div class="step last">
+            <div class="num">2</div>
+            <div class="stitle">Modelo</div>
+            <div class="thumbs" id="thumbs"></div>
+            <input type="file" id="fileM" accept="image/*" multiple hidden>
+          </div>
+        </div>
+        <div class="fbottom"><button class="gen" id="gen">Generar <span class="cr">🪙</span></button><div class="err" id="err"></div></div>
+      </div>
+    </section>
+
+    <section class="stage" id="stage">
+      <div id="intro" style="display:flex;flex-direction:column;align-items:center">
+        <h1>Prueba virtual con Modelo IA</h1>
+        <p class="sub">Sube una imagen de la prenda y una foto de modelo para generar fácilmente impactantes imágenes de prueba en modelo.</p>
+        <div class="demo">
+          <div class="gcard"><div class="im" id="demoG"><img src="/api/img?url=https%3A%2F%2F10y20.com%2Fwp-content%2Fuploads%2F2026%2F09%2Fcazadora-acolchada-camel-tiffosi.jpg" alt="Prenda"></div><span>Ropa</span></div>
+          <svg class="arrow" width="34" height="20" viewBox="0 0 34 20"><path d="M2 10h28m-8-7 8 7-8 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div class="res" id="demoR"><div class="im"><img src="/demo/prueba-1.jpg" alt="Resultado 1"></div><div class="im"><img src="/demo/prueba-2.jpg" alt="Resultado 2"></div><div class="im"><img src="/demo/prueba-3.jpg" alt="Resultado 3"></div></div>
+        </div>
+      </div>
+
+      <div class="result" id="result">
+        <div class="rhead"><h2>Imagen resultante</h2><button class="chip" id="back">← Volver</button></div>
+        <div class="rgrid" id="rgrid"></div>
+        <div class="bar">
+          <span class="chip">Generación rápida <span class="lite">LITE</span></span>
+          <span class="chip">Nano Banana</span>
+          <span class="chip" id="ratio" title="Formato">3:4</span>
+          <span class="grow"></span>
+          <button class="gen ready" id="gen2">Generar</button>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const $=s=>document.querySelector(s);
+const ICON={
+ home:'<path d="M3 11 12 4l9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+ shirt:'<path d="M8 3 3 6l2 5 3-1v11h8V10l3 1 2-5-5-3c-.5 1.7-2 3-4 3S8.5 4.7 8 3z"/>',
+ model:'<circle cx="12" cy="6" r="3"/><path d="M6 21v-5a6 6 0 0 1 12 0v5z"/>',
+ video:'<rect x="3" y="5" width="18" height="14" rx="3"/><path d="m10 9 5 3-5 3z"/>',
+ gen:'<path d="M20 12a8 8 0 1 1-3-6.2M20 4v5h-5"/>',
+ design:'<path d="m4 20 4-1 11-11-3-3L5 16zM14 6l3 3"/>',
+ canvas:'<circle cx="6" cy="6" r="2"/><circle cx="18" cy="18" r="2"/><path d="M8 6h7a3 3 0 0 1 0 6H9a3 3 0 0 0 0 6h7"/>',
+ more:'<circle cx="5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="19" cy="12" r="1.4"/>',
+ dress:'<path d="M9 3h6l-1 4 4 13H6l4-13z"/>',
+ lingerie:'<path d="M6 4c0 4 3 6 6 6s6-2 6-6M6 4v6l-2 9h16l-2-9V4"/>',
+ pose:'<circle cx="12" cy="4.5" r="2"/><path d="m7 9 5 1 5-3M12 10v5l-3 6M12 15l4 6"/>',
+ gener:'<circle cx="9" cy="8" r="3"/><path d="M4 20v-2a5 5 0 0 1 10 0v2M17 4l1 2 2 1-2 1-1 2-1-2-2-1 2-1z"/>',
+ angle:'<circle cx="12" cy="7" r="2.5"/><path d="M4 15c0 2.5 3.6 4.5 8 4.5s8-2 8-4.5-3.6-4.5-8-4.5"/><path d="m14 17.5-2 2 2 2"/>',
+ scene:'<path d="M3 20h18M5 20l3-9 4 5 3-3 4 7"/><circle cx="17" cy="6" r="2"/>',
+ shoe:'<path d="M3 17v-5l4-1 3 3 5 1c3 .5 6 1.5 6 4v1H3zM9 8l2 2M12 7l2 2"/>'
+};
+const ic=(k,sw=1.7)=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round">${ICON[k]}</svg>`;
+
+// rail
+const rail=[['home','Inicio'],['shirt','Ropa'],['model','Modelo',1],['video','Vídeo de marketing',0,1],['gen','Generar'],['design','Herramientas de diseño'],['canvas','Lienzo de forma libre']];
+$('#rail').innerHTML=rail.map(([k,t,on,nw],i)=>(i==1?'<div class="sep"></div>':'')+`<button class="ri${on?' on':''}">${ic(k)}${nw?'<span class="new">New</span>':''}<span class="tip">${t}</span></button>`).join('')+`<button class="ri more">${ic('more')}<span class="tip">Más</span></button>`;
+document.querySelectorAll('.ri').forEach(b=>b.onclick=()=>{document.querySelectorAll('.ri').forEach(x=>x.classList.remove('on'));b.classList.add('on')});
+
+// tools
+const tools=[['dress','Prueba virtual con Modelo IA'],['lingerie','Prueba de lencería y ropa ajustada','HOT'],['pose','Cambiar postura'],['gener','Generador de modelos de moda con IA'],['angle','Cambiar ángulo de foto'],['scene','Cambiar escena'],['shoe','Prueba virtual de calzado con IA']];
+$('#tools').innerHTML=tools.map(([k,t,h],i)=>`<button class="tool${i==0?' on':''}" data-i="${i}"><span class="ic">${ic(k)}</span>${h?'<span class="hot">'+h+'</span>':''}${t}</button>`).join('');
+document.querySelectorAll('.tool').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.tool').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+  const i=+b.dataset.i;if(i===3){location.href='/';return}
+  if(i>0){toast('Esta herramienta llega pronto. Ya puedes usar la prueba virtual.');document.querySelectorAll('.tool').forEach(x=>x.classList.toggle('on',x.dataset.i==='0'))}
+});
+
+// select
+const areas=['Arriba','Abrigo','Falda','Pantalones','Vestido','Enterizo','Bufanda','Calzado','Accesorio','Bolsa'];
+let area=null;
+function renderOpts(){$('#opts').innerHTML='<div class="opt head">Configurar</div>'+areas.map(a=>`<div class="opt${a===area?' on':''}" data-a="${a}">${a}</div>`).join('')}
+renderOpts();
+$('#selBtn').onclick=e=>{e.stopPropagation();$('#sel').classList.toggle('open')};
+$('#opts').onclick=e=>{const a=e.target.dataset.a;if(!a)return;area=a;$('#selVal').textContent=a;renderOpts();$('#sel').classList.remove('open');check()};
+document.addEventListener('click',()=>$('#sel').classList.remove('open'));
+
+// uploads
+let garment=null,models=[];
+// convierte cualquier imagen (archivo o enlace) a JPEG de máx. 1280 px
+function toJpeg(src){return new Promise((ok,ko)=>{const im=new Image();im.onload=()=>{const k=Math.min(1,1280/Math.max(im.naturalWidth,im.naturalHeight));const c=document.createElement('canvas');c.width=Math.round(im.naturalWidth*k);c.height=Math.round(im.naturalHeight*k);const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);ok(c.toDataURL('image/jpeg',.9))};im.onerror=()=>ko(new Error('No se pudo abrir esa imagen'));im.src=src})}
+const read=f=>new Promise(r=>{const fr=new FileReader();fr.onload=()=>r(fr.result);fr.readAsDataURL(f)}).then(toJpeg);
+const fromUrl=u=>toJpeg('/api/img?url='+encodeURIComponent(u));
+function dropify(el,onFiles){
+  el.addEventListener('dragover',e=>{e.preventDefault();el.classList.add('over')});
+  el.addEventListener('dragleave',()=>el.classList.remove('over'));
+  el.addEventListener('drop',e=>{e.preventDefault();el.classList.remove('over');onFiles([...e.dataTransfer.files].filter(f=>f.type.startsWith('image/')))});
+}
+const dG=$('#dropG');
+dG.onclick=e=>{if(e.target.id==='rmG')return;$('#fileG').click()};
+$('#fileG').onchange=e=>setG([...e.target.files]);
+dropify(dG,setG);
+async function setG(fs){if(!fs.length)return;try{garment=await read(fs[0]);renderG()}catch(e){toast(e.message)}}
+$('#urlBtn').onclick=async()=>{const u=$('#urlG').value.trim();if(!/^https?:\/\//.test(u)){toast('Pega un enlace que empiece por https://');return}
+  $('#urlBtn').textContent='…';try{garment=await fromUrl(u);renderG();$('#urlG').value=''}catch(e){toast('No se pudo cargar esa imagen. Prueba con el enlace directo de la foto.')}$('#urlBtn').textContent='Usar'};
+$('#rmG').onclick=e=>{e.stopPropagation();garment=null;$('#fileG').value='';renderG()};
+function renderG(){
+  dG.querySelectorAll('img').forEach(i=>i.remove());
+  dG.classList.toggle('has',!!garment);
+  dG.querySelector('.plus').style.display=garment?'none':'';
+  if(garment){const i=new Image();i.src=garment;dG.prepend(i)}
+  $('#cntG').textContent=(garment?1:0)+'/1';check();
+}
+function renderM(){
+  const t=$('#thumbs');
+  t.innerHTML=models.map((m,i)=>`<div class="drop has"><img src="${m}"><button class="rm" data-i="${i}">✕</button></div>`).join('')+
+    (models.length<5?`<div class="drop" id="addM"><span>+</span><span class="cnt">${models.length}/5</span></div>`:'');
+  t.querySelectorAll('.rm').forEach(b=>b.onclick=e=>{e.stopPropagation();models.splice(+b.dataset.i,1);renderM()});
+  const a=$('#addM');if(a){a.onclick=()=>$('#fileM').click();dropify(a,addM)}
+  if(models.length==0)t.querySelector('.drop').style.cssText='width:132px;height:132px';
+  check();
+}
+$('#fileM').onchange=e=>{addM([...e.target.files]);e.target.value=''};
+async function addM(fs){for(const f of fs){if(models.length>=5)break;try{models.push(await read(f))}catch(e){toast(e.message)}}renderM()}
+renderM();
+
+function check(){$('#gen').classList.toggle('ready',!!garment&&models.length>0&&!busy)}
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),3200)}
+
+let busy=false;
+const b64=d=>d.split(',')[1];
+async function post(payload){
+  const r=await fetch('/api/generate',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)});
+  const j=await r.json().catch(()=>({error:'Respuesta no válida del servidor'}));
+  if(!r.ok)throw new Error(j.error||'Error');return j;
+}
+async function generate(){
+  $('#err').textContent='';
+  if(!garment){toast('Sube primero la imagen de la prenda');return}
+  if(!models.length){toast('Sube al menos una foto de modelo');return}
+  if(busy)return;busy=true;$('#gen').classList.remove('ready');
+  $('#intro').style.display='none';$('#result').classList.add('on');
+  const g=$('#rgrid');const formato=$('#ratio').textContent;
+  g.innerHTML='';
+  const slots=models.map(()=>{const d=document.createElement('div');d.className='rbox';d.style.aspectRatio=formato.replace(':',' / ');d.innerHTML='<div class="loader"></div>';g.appendChild(d);return d});
+  let ok=0,last='';
+  await Promise.all(models.map(async(m,i)=>{
+    try{
+      const r=await post({imagen:b64(garment),mime:'image/jpeg',estilo:'prueba-virtual',formato,modelo:b64(m),detalles:area?('Prenda a cambiar: '+area):''});
+      const src=`data:${r.mime};base64,${r.imagen}`;
+      slots[i].innerHTML=`<img src="${src}" alt="Prueba virtual"><a class="dl" download="prueba-virtual-${Date.now()}-${i+1}.png" href="${src}">Descargar</a>`;ok++;
+    }catch(e){last=e.message;slots[i].innerHTML=`<div class="rerr">${e.message}</div>`}
+  }));
+  if(!ok)$('#err').textContent=last;
+  busy=false;check();
+}
+$('#gen').onclick=generate;$('#gen2').onclick=generate;
+$('#back').onclick=()=>{$('#result').classList.remove('on');$('#intro').style.display='flex'};
+$('#ratio').onclick=()=>{const r=['3:4','4:5','9:16','1:1'];const el=$('#ratio');el.textContent=r[(r.indexOf(el.textContent)+1)%r.length]};
+
+// banner rotation
+const bmsgs=['Crea fotos de moda con modelo IA en segundos','Plantillas de vídeo para marketing de ropa, ¡fáciles de recrear!','Crea imágenes y vídeos de moda por lotes con el Lienzo de forma libre'];
+let bi=0;setInterval(()=>{bi=(bi+1)%bmsgs.length;$('#bannerTxt').textContent=bmsgs[bi]},5000);
+
+</script>
+</body>
+</html>
