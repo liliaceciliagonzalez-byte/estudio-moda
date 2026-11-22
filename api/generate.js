@@ -14,6 +14,7 @@ const STYLES = {
   "modelo-casual": "Casual lifestyle photo: a smiling Latina woman wearing the garment styled with jeans in a bright cafe, candid Instagram look.",
   "modelo-estudio": "Professional studio portrait: a female model wearing the garment, beige paper backdrop, softbox lighting, half body, confident pose.",
   "flat-lay": "Styled flat lay from directly above: the garment laid neatly on a beige linen surface with sunglasses, a small handbag and gold jewelry. No person.",
+  "prueba-virtual": "Virtual try-on. Take ONLY the garment from the FIRST image (if a person wears it there, ignore that person completely). Recreate the SECOND image as faithfully as possible: the same woman, same pose, same framing, same background and same lighting, now wearing that garment in place of the matching piece of clothing. Keep every other item of clothing, accessory and the hair exactly as in the second image. The fit, folds and shadows of the garment must look natural on her body.",
   "lifestyle": "Aspirational lifestyle photo: a woman wearing the garment in a bright modern apartment with plants, holding a coffee cup, soft daylight.",
 };
 const RATIOS = ["3:4", "4:5", "9:16", "1:1"];
