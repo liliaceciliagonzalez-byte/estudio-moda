@@ -14,13 +14,25 @@ const STYLES = {
   "modelo-casual": "Casual lifestyle photo: a smiling Latina woman wearing the garment styled with jeans in a bright cafe, candid Instagram look.",
   "modelo-estudio": "Professional studio portrait: a female model wearing the garment, beige paper backdrop, softbox lighting, half body, confident pose.",
   "flat-lay": "Styled flat lay from directly above: the garment laid neatly on a beige linen surface with sunglasses, a small handbag and gold jewelry. No person.",
-  "prueba-virtual": "Virtual try-on. Take ONLY the garment from the FIRST image (if a person wears it there, ignore that person completely). Recreate the SECOND image as faithfully as possible: the same woman, same pose, same framing, same background and same lighting, now wearing that garment in place of the matching piece of clothing. Keep every other item of clothing, accessory and the hair exactly as in the second image. The fit, folds and shadows of the garment must look natural on her body.",
+  "prueba-virtual": "Virtual try-on. Take ONLY the clothing items from the garment image(s) (if a person wears them there, ignore that person completely). Recreate the model photo as faithfully as possible: the same woman, same pose, same framing, same background and same lighting, now wearing those items in place of the matching pieces of clothing. Keep every other item of clothing, accessory and the hair exactly as in the model photo. The fit, folds and shadows must look natural on her body.",
   "lifestyle": "Aspirational lifestyle photo: a woman wearing the garment in a bright modern apartment with plants, holding a coffee cup, soft daylight.",
 };
-const RATIOS = ["3:4", "4:5", "9:16", "1:1"];
 const MODEL_LOCK =
   "The FIRST image is the garment. The SECOND image is the model. The person wearing the garment MUST be the exact same person as in the second image: identical face shape, eyes, nose, lips, eyebrows, skin tone, age, hair color and hairstyle, and approximate body type. Do not beautify, slim, age or change her face in any way. Face clearly visible and recognizable. Identity preservation is the top priority.";
+const RATIOS = ["3:4", "4:5", "9:16", "1:1"];
+
+// Herramientas de edición: parten de una foto ya hecha (con persona) y solo cambian una cosa.
+const EDIT_LOCK =
+  "Edit this fashion photo. Keep EXACTLY the same person (face, hair, skin tone, body) and EXACTLY the same clothes, shoes and accessories with every detail, color and print. Do not add or remove clothing.";
+const EDITS = {
+  "cambiar-postura": (o) => `Only change her pose to: ${o || "a natural, confident fashion pose"}. Keep the same background, framing style and lighting.`,
+  "cambiar-angulo": (o) => `Only change the camera angle to: ${o || "a three-quarter view"}. Show the same scene from that new angle, keeping the same lighting and location.`,
+  "cambiar-escena": (o) => `Only change the background and location to: ${o || "a bright modern boutique"}. Keep her pose; adapt the lighting naturally to the new place.`,
+};
+
 export const config = { maxDuration: 120 };
+
+const inline = (data, mime = "image/jpeg") => ({ inline_data: { mime_type: mime, data } });
 
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).json({ error: "Método no permitido" });
@@ -29,37 +41,53 @@ export default async function handler(req, res) {
     const denied = checkAccess(req, body, "foto");
     if (denied) return res.status(403).json({ error: denied });
 
-    const { imagen, mime = "image/jpeg", estilo, formato = "3:4", detalles = "", marca = "", modelo = "", color = "" } = body;
-    if (!imagen || !STYLES[estilo]) return res.status(400).json({ error: "Falta la foto de la prenda o el estilo." });
-
-    const colorTxt = String(color).trim().slice(0, 60);
-    const lock = colorTxt
-      ? `Use the exact garment from the reference image (same cut, length, fabric texture, buttons, seams and every design detail) but change its color to: ${colorTxt}. The new color must look natural and realistic on the fabric, with correct shadows and highlights. Only the color changes.`
-      : GARMENT_LOCK;
-    const prompt = [lock, modelo ? MODEL_LOCK : "", STYLES[estilo], marca ? `Brand style to respect (in Spanish): ${String(marca).slice(0, 400)}` : "", detalles ? `Extra details from the shop owner (in Spanish): ${String(detalles).slice(0, 400)}` : "", QUALITY]
-      .filter(Boolean).join("\n\n");
+    const { imagen, mime = "image/jpeg", estilo, formato = "3:4", detalles = "", marca = "", modelo = "", color = "", area = "", opcion = "" } = body;
+    const extras = (Array.isArray(body.prendas) ? body.prendas : []).filter(Boolean).slice(0, 3);
+    const isEdit = !!EDITS[estilo];
+    if (!imagen || (!STYLES[estilo] && !isEdit)) return res.status(400).json({ error: "Falta la foto o el tipo de creación." });
 
     const flash = process.env.GEMINI_IMAGE_MODEL || "gemini-2.5-flash-image";
     const pro = process.env.GEMINI_FACE_MODEL || "gemini-3-pro-image";
+    const ratio = RATIOS.includes(formato) ? formato : "3:4";
+
+    let prompt, parts;
+    if (isEdit) {
+      prompt = [EDIT_LOCK, EDITS[estilo](String(opcion).slice(0, 200)), detalles ? `Extra details (in Spanish): ${String(detalles).slice(0, 400)}` : "", QUALITY].filter(Boolean).join("\n\n");
+      parts = [{ text: prompt }, inline(imagen, mime)];
+    } else {
+      const nG = 1 + extras.length;
+      const outfit = nG > 1
+        ? `The first ${nG} images are ${nG} different clothing items that together form ONE complete outfit. The model must wear ALL of them at the same time, each one exactly as in its reference image (same color, fabric, cut, length, details). Do not add other main garments.`
+        : "";
+      const colorTxt = String(color).trim().slice(0, 60);
+      const lock = colorTxt
+        ? `Use the exact garment from the reference image (same cut, length, fabric texture, buttons, seams and every design detail) but change its color to: ${colorTxt}. The new color must look natural and realistic on the fabric, with correct shadows and highlights. Only the color changes.`
+        : GARMENT_LOCK;
+      const modelLock = modelo
+        ? `Image ${nG + 1} (the last image) is the model. ` + MODEL_LOCK.replace(/^The FIRST image is the garment\. The SECOND image is the model\. /, "").replace(/the second image/g, "the last image")
+        : "";
+      const areaTxt = area ? `The garment to place on her is: ${String(area).slice(0, 40)} (in Spanish). Replace only that part of her outfit.` : "";
+      prompt = [lock, outfit, modelLock, STYLES[estilo], areaTxt, marca ? `Brand style to respect (in Spanish): ${String(marca).slice(0, 400)}` : "", detalles ? `Extra details from the shop owner (in Spanish): ${String(detalles).slice(0, 400)}` : "", QUALITY]
+        .filter(Boolean).join("\n\n");
+      parts = [{ text: prompt }, inline(imagen, mime), ...extras.map((d) => inline(d)), ...(modelo ? [inline(modelo)] : [])];
+    }
+
     const run = (model) => gemini(model, {
-      contents: [{ parts: [{ text: prompt }, { inline_data: { mime_type: mime, data: imagen } }, ...(modelo ? [{ inline_data: { mime_type: "image/jpeg", data: modelo } }] : [])] }],
-      generationConfig: {
-        responseModalities: ["IMAGE"],
-        imageConfig: { aspectRatio: RATIOS.includes(formato) ? formato : "3:4", ...(model === pro ? { imageSize: "2K" } : {}) },
-      },
+      contents: [{ parts }],
+      generationConfig: { responseModalities: ["IMAGE"], imageConfig: { aspectRatio: ratio, ...(model === pro ? { imageSize: "2K" } : {}) } },
     });
-    // Con cara de modelo usamos el modelo Pro, que respeta mucho mejor la identidad.
+    // Con persona real (su modelo o una foto a editar) usamos el modelo Pro, que respeta mucho mejor la cara.
     let data, motor = flash, aviso = "";
-    if (modelo) {
+    if (modelo || isEdit || extras.length) {
       try { data = await run(pro); motor = pro; } catch (e) { aviso = String(e.message || e).slice(0, 200); data = await run(flash); }
     } else {
       data = await run(flash);
     }
-    const parts = data?.candidates?.[0]?.content?.parts || [];
-    const img = parts.find((p) => p.inlineData || p.inline_data);
-    const inline = img?.inlineData || img?.inline_data;
-    if (!inline?.data) return res.status(502).json({ error: "No se pudo crear la foto. Prueba con otra imagen de la prenda." });
-    return res.status(200).json({ imagen: inline.data, mime: inline.mimeType || inline.mime_type || "image/png", motor, aviso });
+    const out = data?.candidates?.[0]?.content?.parts || [];
+    const img = out.find((p) => p.inlineData || p.inline_data);
+    const inl = img?.inlineData || img?.inline_data;
+    if (!inl?.data) return res.status(502).json({ error: "No se pudo crear la foto. Prueba con otra imagen." });
+    return res.status(200).json({ imagen: inl.data, mime: inl.mimeType || inl.mime_type || "image/png", motor, aviso });
   } catch (e) {
     return res.status(500).json({ error: e.message || "Error inesperado" });
   }
