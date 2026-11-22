@@ -108,6 +108,19 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
 .vid .skel{aspect-ratio:9/16;text-align:center;padding:20px}
 .drop.small{min-height:120px;margin-top:8px}
 .drop.small img{max-height:150px}
+.thumbs{display:flex;gap:8px;flex-wrap:wrap}
+.th{width:78px;height:100px;border-radius:12px;border:1.5px dashed #5a5047;position:relative;overflow:hidden;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:24px;color:var(--muted);background:transparent;transition:.2s}
+.th:hover,.th.over{border-color:var(--orange);background:rgba(255,102,0,.05)}
+.th.has{border-style:solid;border-color:var(--line)}
+.th img{width:100%;height:100%;object-fit:cover}
+.th .x{position:absolute;top:4px;right:4px;background:rgba(0,0,0,.7);border:0;color:#fff;border-radius:999px;width:22px;height:22px;cursor:pointer;font-size:12px}
+.urlrow{display:flex;gap:8px;margin-top:10px}.urlrow input{flex:1}
+.res .dl{flex-wrap:wrap;justify-content:flex-end}
+.tryon{display:flex;align-items:center;gap:14px;margin-top:30px;flex-wrap:wrap;justify-content:center}
+.tryon figure{border-radius:18px;overflow:hidden;border:1px solid var(--line);background:var(--card);width:220px}
+.tryon img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block}
+.tryon figcaption{padding:10px 12px;font-size:13px;color:var(--muted)}
+.tryon .arr{font-family:Anton;font-size:40px;color:var(--orange)}
 .legal{font-size:11px;color:var(--muted);margin-top:8px}
 .upsell{display:none;margin-top:12px;border:1px solid var(--orange);border-radius:14px;padding:14px;font-size:14px}
 .upsell a{color:var(--orange);font-weight:600}
@@ -151,27 +164,43 @@ details.brand summary{font-size:13px}
   <h2>Sube tu prenda y <em>elige el estilo</em></h2>
   <div class="studio">
     <div class="panel">
+      <div class="lbl" style="margin-top:0">Qué crear</div>
+      <div class="chips" id="modes"></div>
+      <div class="lbl" id="gLbl">Tu prenda</div>
       <div class="drop" id="drop">
         <input type="file" id="file" accept="image/*" hidden>
-        <div id="dropEmpty"><div style="font-size:34px">📸</div><b>Sube la foto de tu prenda</b><div class="mini">En percha, sobre la mesa o en maniquí · JPG o PNG</div></div>
+        <div id="dropEmpty"><div style="font-size:34px">📸</div><b id="dropTxt">Sube la foto de tu prenda</b><div class="mini" id="dropSub">En percha, sobre la mesa, en maniquí o puesta · JPG o PNG</div></div>
       </div>
-      <div class="lbl">Tu modelo (opcional)</div>
-      <div class="drop small" id="drop2">
-        <input type="file" id="file2" accept="image/*" hidden>
-        <div><div style="font-size:26px">👩🏽</div><b>Sube la cara de tu modelo</b><div class="mini">Saldrá con esa cara en todas las fotos. Si no subes nada, usamos una modelo IA.</div></div>
+      <div class="urlrow"><input type="text" id="urlIn" placeholder="o pega el enlace de la foto (de tu web o tienda)"><button class="chip" id="urlBtn">Usar</button></div>
+      <div id="outfitBox">
+        <div class="lbl">Outfit completo (opcional)</div>
+        <div class="thumbs" id="extras"></div>
+        <div class="mini">Añade hasta 3 prendas más (pantalón, zapatos, bolso…) y saldrán todas puestas juntas.</div>
+      </div>
+      <div id="areaBox" style="display:none">
+        <div class="lbl">Qué prenda cambiar</div>
+        <div class="chips" id="areas"></div>
+      </div>
+      <div id="modelBox">
+        <div class="lbl" id="mLbl">Tu modelo (opcional)</div>
+        <div class="thumbs" id="models"></div>
+        <div class="mini" id="mNote">Sube la cara de tu modelo y saldrá con esa cara. Si no subes nada, usamos una modelo IA.</div>
+      </div>
+      <div id="editBox" style="display:none">
+        <div class="lbl" id="eLbl">Nueva postura</div>
+        <div class="chips" id="eopts"></div>
+        <input type="text" id="eTxt" placeholder="U escribe la tuya…" style="margin-top:8px">
       </div>
       <div class="legal">Al subir fotos confirmas que tienes derecho a usarlas y el permiso de las personas que aparezcan.</div>
-      <div class="lbl">Qué crear</div>
-      <div class="chips" id="modes"></div>
-      <div class="lbl">Estilo</div>
-      <div class="styles" id="styles"></div>
-      <div class="lbl">Color de la prenda</div>
+      <div id="styleBox"><div class="lbl">Estilo</div>
+      <div class="styles" id="styles"></div></div>
+      <div id="colorBox"><div class="lbl">Color de la prenda</div>
       <div class="chips" id="colors"></div>
-      <input type="text" id="colorTxt" placeholder="U otro color: ej. verde esmeralda, rosa palo…" style="margin-top:8px">
+      <input type="text" id="colorTxt" placeholder="U otro color: ej. verde esmeralda, rosa palo…" style="margin-top:8px"></div>
       <div class="lbl">Formato</div>
       <div class="chips" id="formats"></div>
-      <div class="lbl">Fotos</div>
-      <div class="chips" id="counts"></div>
+      <div id="countBox"><div class="lbl">Fotos</div>
+      <div class="chips" id="counts"></div></div>
       <div class="lbl">Movimiento del vídeo 9:16</div>
       <div class="chips" id="moves"></div>
       <div class="lbl">Detalles (opcional)</div>
@@ -187,7 +216,7 @@ details.brand summary{font-size:13px}
       <div class="empty" id="empty">
         <div class="ph" id="ph"></div>
         <b style="color:var(--cream);font-size:18px">Aquí aparecerán tus fotos</b>
-        <span>Y también el nombre, la descripción y el caption de tu producto. Toca «Vídeo» en cualquier foto para convertirla en un reel 9:16.</span>
+        <span>Y también el nombre, la descripción y el caption de tu producto. Toca «Vídeo» en cualquier foto para convertirla en un reel 9:16, o «Editar» para cambiarle la postura, el ángulo o la escena.</span>
       </div>
       <div class="grid" id="grid"></div>
       <div class="ficha" id="ficha"></div>
@@ -199,6 +228,19 @@ details.brand summary{font-size:13px}
   <div class="kicker">La transformación</div>
   <h2>De la percha a la <em>editorial</em> en un minuto</h2>
   <div class="ba" id="ba"></div>
+</div></section>
+
+<section id="probador"><div class="wrap">
+  <div class="kicker">Prueba virtual</div>
+  <h2>Tu prenda puesta <em>en tus modelos</em></h2>
+  <p class="lead">Sube la prenda y la foto de tu modelo: sale con la misma cara, la misma pose y el mismo fondo, pero con tu ropa. Hasta 5 modelos de una vez.</p>
+  <div class="tryon">
+    <figure><img src="/api/img?url=https%3A%2F%2F10y20.com%2Fwp-content%2Fuploads%2F2026%2F09%2Fcazadora-acolchada-camel-tiffosi.jpg" alt="Prenda" loading="lazy"><figcaption>La prenda</figcaption></figure>
+    <div class="arr">→</div>
+    <figure><img src="/demo/prueba-1.jpg" alt="Prueba virtual 1" loading="lazy"><figcaption>Modelo 1</figcaption></figure>
+    <figure><img src="/demo/prueba-2.jpg" alt="Prueba virtual 2" loading="lazy"><figcaption>Modelo 2</figcaption></figure>
+    <figure><img src="/demo/prueba-3.jpg" alt="Prueba virtual 3" loading="lazy"><figcaption>Modelo 3</figcaption></figure>
+  </div>
 </div></section>
 
 <section id="como"><div class="wrap">
@@ -217,13 +259,14 @@ details.brand summary{font-size:13px}
   <p class="lead">Creación de vídeos incluida en todos los planes de pago.</p>
   <div class="feat">
     <div class="f"><div class="ic">👗</div><h4>Fotos de moda</h4><p>Tu prenda en 9 estilos profesionales.</p></div>
-    <div class="f"><div class="ic">💃</div><h4>Tu propia modelo</h4><p>Sube su cara y sale en todas tus fotos, o usa una modelo IA.</p></div>
+    <div class="f"><div class="ic">💃</div><h4>Prueba virtual</h4><p>Tu prenda puesta en tus modelos, con su cara, pose y fondo.</p></div>
+    <div class="f"><div class="ic">🧥</div><h4>Outfit completo</h4><p>Hasta 4 prendas juntas: arriba, abajo, zapatos y bolso.</p></div>
+    <div class="f"><div class="ic">🔄</div><h4>Postura, ángulo y escena</h4><p>Cambia cualquier foto sin repetir la sesión.</p></div>
     <div class="f"><div class="ic">✍️</div><h4>Textos de producto</h4><p>Nombre, descripción, estilismo y caption.</p></div>
     <div class="f"><div class="ic">📱</div><h4>Para redes</h4><p>Formatos de feed, historias y marketplace.</p></div>
     <div class="f"><div class="ic">🛍️</div><h4>Campañas de producto</h4><p>Una prenda, 3 escenas distintas de una vez.</p></div>
-    <div class="f"><div class="ic">🗂️</div><h4>Catálogos</h4><p>Fondos coherentes para toda tu colección.</p></div>
-    <div class="f"><div class="ic">🎬</div><h4>Vídeo 9:16</h4><p>Tu prenda en movimiento: pasarela, giro, detalle.</p></div>
-    <div class="f"><div class="ic">📣</div><h4>Anuncios <span class="soon">pronto</span></h4><p>Creatividades listas para Meta.</p></div>
+        <div class="f"><div class="ic">🎬</div><h4>Vídeo 9:16</h4><p>Tu prenda en movimiento: pasarela, giro, detalle.</p></div>
+    <div class="f"><div class="ic">🔗</div><h4>Desde un enlace</h4><p>Pega el enlace de la foto de tu web y listo.</p></div>
   </div>
 </div></section>
 
@@ -254,6 +297,9 @@ details.brand summary{font-size:13px}
     <details><summary>¿Puedo usar las fotos en mi tienda y en anuncios?</summary><p>Sí, las fotos son para que las uses en tu web, redes, catálogos y publicidad.</p></details>
     <details><summary>¿Necesito saber de diseño?</summary><p>No. Subes, eliges estilo y descargas.</p></details>
     <details><summary>¿Puedo usar la cara de mi propia modelo?</summary><p>Sí. Sube su foto en «Tu modelo» y la prenda saldrá puesta en ella. Necesitas su permiso para usar su imagen.</p></details>
+    <details><summary>¿Puedo crear un outfit completo?</summary><p>Sí. Sube la prenda principal y añade hasta 3 más en «Outfit completo» (pantalón, zapatos, bolso…). La modelo sale con todas puestas.</p></details>
+    <details><summary>¿Qué es la prueba virtual?</summary><p>Subes tu prenda y la foto de tu modelo, y sale ella misma, con su pose y su fondo, llevando tu prenda. Puedes subir hasta 5 modelos y elegir qué prenda cambiar.</p></details>
+    <details><summary>¿Puedo cambiar la postura, el ángulo o el fondo de una foto?</summary><p>Sí. Elige «Cambiar postura», «Cambiar ángulo» o «Cambiar escena» y sube la foto, o toca «Editar» en cualquier foto que hayas creado.</p></details>
     <details><summary>¿Puedo cambiar el color de la prenda?</summary><p>Sí. Elige un color en «Color de la prenda» o escribe el que quieras. Se mantiene el diseño y solo cambia el color.</p></details>
     <details><summary>¿Puedo hacer vídeos?</summary><p>Sí. Toca «Vídeo» en cualquier foto creada y elige el movimiento: pasarela, giro, detalle o viento. Sale en 9:16 para Reels y TikTok. Incluido en los planes de pago.</p></details>
     <details><summary>¿Qué pasa con los créditos que no uso?</summary><p>Se acumulan mes a mes mientras tu plan esté activo.</p></details>
@@ -287,10 +333,16 @@ const STYLES = [
 const FORMATS = [["3:4","Tienda 3:4"],["4:5","Feed 4:5"],["9:16","Historias 9:16"],["1:1","Cuadrado 1:1"]];
 const COUNTS = ["1","2","3","4"];
 const COLORS = [["","Original"],["negro","Negro"],["blanco","Blanco"],["beige","Beige"],["rojo","Rojo"],["azul marino","Azul marino"],["verde oliva","Verde"],["rosa palo","Rosa"],["camel","Camel"]];
-const MODES = [["foto","Fotos"],["campana","Campaña (3 escenas)"]];
+const MODES = [["foto","Fotos con modelo IA"],["campana","Campaña (3 escenas)"],["tryon","Prueba virtual"],["cambiar-postura","Cambiar postura"],["cambiar-angulo","Cambiar ángulo"],["cambiar-escena","Cambiar escena"]];
+const EDIT = {
+  "cambiar-postura": ["Nueva postura", ["De pie, mano en la cadera","Caminando hacia la cámara","Sentada en un taburete","De espaldas mirando por encima del hombro","Apoyada en la pared"], "Cambiar postura"],
+  "cambiar-angulo": ["Nuevo ángulo", ["De frente","Tres cuartos","De perfil","De espaldas","Desde abajo","Plano detalle de la prenda"], "Cambiar ángulo"],
+  "cambiar-escena": ["Nueva escena", ["Estudio blanco","Calle de ciudad","Playa al atardecer","Boutique elegante","Café con encanto","Jardín con flores"], "Cambiar escena"]
+};
+const AREAS = [["","Automático"],["parte de arriba","Arriba"],["abrigo o chaqueta","Abrigo"],["falda","Falda"],["pantalones","Pantalones"],["vestido","Vestido"],["mono o enterizo","Enterizo"],["bufanda","Bufanda"],["calzado","Calzado"],["accesorio","Accesorio"],["bolso","Bolso"]];
 const MOVES = [["pasarela","Pasarela"],["giro","Giro 360°"],["detalle","Detalle"],["viento","Con brisa"]];
 const $ = id => document.getElementById(id);
-const state = { img:null, mime:"image/jpeg", style:"estudio-limpio", format:"3:4", count:"2", mode:"foto", move:"pasarela", color:"", busy:false };
+const state = { img:null, mime:"image/jpeg", style:"estudio-limpio", format:"3:4", count:"2", mode:"foto", move:"pasarela", color:"", area:"", eopt:"", extras:[], modelos:[], busy:false };
 
 // style picker
 $("styles").innerHTML = STYLES.map(([id,t,img]) => `<button class="st${id===state.style?" on":""}" data-id="${id}"><img src="${IMG(img)}" alt="${t}" loading="lazy"><span>${t}</span></button>`).join("");
@@ -299,6 +351,8 @@ const chips = (el, items, key) => { $(el).innerHTML = items.map(([v,t]) => `<but
   $(el).onclick = e => { const b=e.target.closest(".chip"); if(!b) return; state[key]=b.dataset.v; $(el).querySelectorAll(".chip").forEach(x=>x.classList.toggle("on",x===b)); updateBtn(); }; };
 chips("formats", FORMATS, "format");
 chips("modes", MODES, "mode");
+chips("areas", AREAS, "area");
+$("modes").addEventListener("click", () => applyMode());
 chips("colors", COLORS, "color");
 $("colors").addEventListener("click", () => { $("colorTxt").value = ""; });
 $("colorTxt").oninput = () => { state.color = $("colorTxt").value.trim(); $("colors").querySelectorAll(".chip").forEach(x=>x.classList.toggle("on", x.dataset.v==="" && !state.color)); };
@@ -319,52 +373,90 @@ $("ba").innerHTML = [[0,"Estudio limpio para tu tienda online"],[2,"Exterior cá
 fetch("/api/config").then(r=>r.ok?r.json():null).then(c=>{ if(c?.codigo) $("codeBox").style.display="block"; }).catch(()=>{});
 try{ $("code").value = localStorage.getItem("em_code")||""; }catch{}
 
-// upload
+// upload: todas las fotos se pasan a JPEG de máx. 1280 px
+function toData(src){ return new Promise((ok,ko)=>{ const im=new Image(); im.onload=()=>{
+  const s=Math.min(1,1280/Math.max(im.width,im.height)); const c=document.createElement("canvas"); c.width=Math.round(im.width*s); c.height=Math.round(im.height*s);
+  const x=c.getContext("2d"); x.fillStyle="#fff"; x.fillRect(0,0,c.width,c.height); x.drawImage(im,0,0,c.width,c.height); ok(c.toDataURL("image/jpeg",.9)); };
+  im.onerror=()=>ko(new Error("No se pudo abrir esa imagen.")); im.src=src; }); }
+const fileData = f => f.type.startsWith("image/") ? toData(URL.createObjectURL(f)) : Promise.reject(new Error("Sube una imagen (JPG o PNG)."));
 const drop = $("drop"), file = $("file");
+const dropEmptyHTML = $("dropEmpty").outerHTML;
 drop.onclick = e => { if(e.target.classList.contains("x")) return; file.click(); };
 drop.ondragover = e => { e.preventDefault(); drop.classList.add("over"); };
 drop.ondragleave = () => drop.classList.remove("over");
 drop.ondrop = e => { e.preventDefault(); drop.classList.remove("over"); if(e.dataTransfer.files[0]) load(e.dataTransfer.files[0]); };
-file.onchange = () => file.files[0] && load(file.files[0]);
-function load(f){
-  if(!f.type.startsWith("image/")) return showErr("Sube una imagen (JPG o PNG).");
-  const url = URL.createObjectURL(f), im = new Image();
-  im.onload = () => {
-    const max = 1280, s = Math.min(1, max/Math.max(im.width, im.height));
-    const c = document.createElement("canvas"); c.width = Math.round(im.width*s); c.height = Math.round(im.height*s);
-    const ctx = c.getContext("2d"); ctx.fillStyle="#fff"; ctx.fillRect(0,0,c.width,c.height); ctx.drawImage(im,0,0,c.width,c.height);
-    const data = c.toDataURL("image/jpeg", .9);
-    state.img = data.split(",")[1]; state.mime = "image/jpeg";
-    drop.innerHTML = `<img src="${data}" alt="Tu prenda"><button class="x" title="Quitar">✕</button>`;
-    drop.querySelector(".x").onclick = ev => { ev.stopPropagation(); reset(); };
-    drop.appendChild(file); showErr(""); updateBtn();
-  };
-  im.src = url;
+file.onchange = () => { file.files[0] && load(file.files[0]); file.value=""; };
+function load(f){ fileData(f).then(setMain).catch(e=>showErr(e.message)); }
+function setMain(data){
+  state.img = data.split(",")[1]; state.mime = "image/jpeg"; state.mainSrc = data;
+  drop.innerHTML = `<img src="${data}" alt="Tu foto"><button class="x" title="Quitar">✕</button>`;
+  drop.querySelector(".x").onclick = ev => { ev.stopPropagation(); reset(); };
+  drop.appendChild(file); showErr(""); updateBtn();
 }
-const drop2 = $("drop2"), file2 = $("file2");
-const drop2Empty = drop2.innerHTML;
-drop2.onclick = e => { if(e.target.classList.contains("x")) return; file2.click(); };
-drop2.ondragover = e => { e.preventDefault(); drop2.classList.add("over"); };
-drop2.ondragleave = () => drop2.classList.remove("over");
-drop2.ondrop = e => { e.preventDefault(); drop2.classList.remove("over"); if(e.dataTransfer.files[0]) loadModel(e.dataTransfer.files[0]); };
-file2.onchange = () => file2.files[0] && loadModel(file2.files[0]);
-function loadModel(f){
-  if(!f.type.startsWith("image/")) return showErr("Sube una imagen (JPG o PNG).");
-  const im = new Image();
-  im.onload = () => {
-    const s = Math.min(1, 1024/Math.max(im.width, im.height));
-    const c = document.createElement("canvas"); c.width = Math.round(im.width*s); c.height = Math.round(im.height*s);
-    c.getContext("2d").drawImage(im,0,0,c.width,c.height);
-    const data = c.toDataURL("image/jpeg", .9);
-    state.modelo = data.split(",")[1];
-    drop2.innerHTML = `<img src="${data}" alt="Tu modelo"><button class="x" title="Quitar">✕</button>`;
-    drop2.querySelector(".x").onclick = ev => { ev.stopPropagation(); state.modelo = null; drop2.innerHTML = drop2Empty; drop2.appendChild(file2); file2.value=""; };
-    drop2.appendChild(file2); showErr("");
-  };
-  im.src = URL.createObjectURL(f);
+function reset(){ state.img=null; state.mainSrc=null; drop.innerHTML = dropEmptyHTML; drop.appendChild(file); applyMode(); updateBtn(); }
+
+// enlace: la foto se trae a través de /api/img
+$("urlBtn").onclick = async () => {
+  const u = $("urlIn").value.trim();
+  if(!/^https?:\/\//i.test(u)) return showErr("Pega un enlace que empiece por https://");
+  $("urlBtn").textContent = "…";
+  try{
+    const data = await toData("/api/img?url="+encodeURIComponent(u));
+    if(!state.img || isEdit()) setMain(data);
+    else if(state.extras.length < 3){ state.extras.push(data); renderThumbs(); }
+    else showErr("Ya tienes 4 prendas en el outfit.");
+    $("urlIn").value = ""; showErr("");
+  }catch(e){ showErr("No se pudo cargar esa imagen. Usa el enlace directo de la foto."); }
+  $("urlBtn").textContent = "Usar";
+};
+
+// miniaturas: prendas extra del outfit y fotos de modelo
+function thumbs(el, list, max, onAdd){
+  const box = $(el);
+  box.innerHTML = list.map((d,i)=>`<div class="th has"><img src="${d}" alt=""><button class="x" data-i="${i}" title="Quitar">✕</button></div>`).join("") + (list.length<max ? `<div class="th add">+</div>` : "");
+  box.querySelectorAll(".x").forEach(b => b.onclick = e => { e.stopPropagation(); list.splice(+b.dataset.i,1); renderThumbs(); updateBtn(); });
+  const add = box.querySelector(".add"); if(!add) return;
+  const inp = document.createElement("input"); inp.type="file"; inp.accept="image/*"; inp.multiple = max-list.length>1; inp.hidden=true; add.appendChild(inp);
+  const take = async fs => { for(const f of [...fs]){ if(list.length>=max) break; try{ list.push(await fileData(f)); }catch(e){ showErr(e.message); } } renderThumbs(); updateBtn(); };
+  add.onclick = e => { if(e.target===inp) return; inp.click(); };
+  inp.onchange = () => take(inp.files);
+  add.ondragover = e => { e.preventDefault(); add.classList.add("over"); };
+  add.ondragleave = () => add.classList.remove("over");
+  add.ondrop = e => { e.preventDefault(); take(e.dataTransfer.files); };
 }
-function reset(){ state.img=null; drop.innerHTML = `<div id="dropEmpty"><div style="font-size:34px">📸</div><b>Sube la foto de tu prenda</b><div class="mini">En percha, sobre la mesa o en maniquí · JPG o PNG</div></div>`; drop.appendChild(file); file.value=""; updateBtn(); }
-function updateBtn(){ const b=$("go"); b.disabled = !state.img || state.busy; b.textContent = state.busy ? "Creando…" : !state.img ? "Sube tu prenda primero" : state.mode==="campana" ? "Crear campaña de 3 escenas ✨" : `Crear ${state.count==="1"?"1 foto":state.count+" fotos"} ✨`; }
+function renderThumbs(){
+  const maxM = state.mode==="tryon" ? 5 : 1;
+  if(state.modelos.length > maxM) state.modelos.length = maxM;
+  thumbs("extras", state.extras, 3);
+  thumbs("models", state.modelos, maxM);
+}
+const isEdit = () => !!EDIT[state.mode];
+function applyMode(){
+  const m = state.mode, ed = isEdit(), tr = m==="tryon";
+  const show = (id,on) => $(id).style.display = on ? "" : "none";
+  show("outfitBox", !ed); show("modelBox", !ed); show("areaBox", tr); show("editBox", ed);
+  show("styleBox", !ed && !tr); show("colorBox", !ed); show("countBox", !tr);
+  $("gLbl").textContent = ed ? "Tu foto" : "Tu prenda";
+  const dt = $("dropTxt"), ds = $("dropSub");
+  if(dt){ dt.textContent = ed ? "Sube la foto que quieres cambiar" : "Sube la foto de tu prenda"; ds.textContent = ed ? "Una foto con la modelo y la ropa puesta" : "En percha, sobre la mesa, en maniquí o puesta · JPG o PNG"; }
+  $("mLbl").textContent = tr ? "Tus modelos (hasta 5)" : "Tu modelo (opcional)";
+  $("mNote").textContent = tr ? "Sube fotos de cuerpo entero o medio cuerpo. Sale cada modelo con su cara, su pose y su fondo, pero con tu prenda." : "Sube la cara de tu modelo y saldrá con esa cara. Si no subes nada, usamos una modelo IA.";
+  if(ed){ const [lbl, opts] = EDIT[m]; $("eLbl").textContent = lbl; state.eopt = opts[0]; $("eTxt").value = "";
+    chips("eopts", opts.map(o=>[o,o]), "eopt"); }
+  renderThumbs(); updateBtn();
+}
+$("eTxt").oninput = () => { state.eTxt = $("eTxt").value.trim(); $("eopts").querySelectorAll(".chip").forEach(x=>x.classList.toggle("on", !state.eTxt && x.dataset.v===state.eopt)); };
+function updateBtn(){
+  const b=$("go"), m=state.mode, n=state.count==="1"?"1 foto":state.count+" fotos";
+  const need = !state.img ? (isEdit() ? "Sube la foto primero" : "Sube tu prenda primero") : (m==="tryon" && !state.modelos.length) ? "Sube la foto de tu modelo" : "";
+  b.disabled = !!need || state.busy;
+  b.textContent = state.busy ? "Creando…" : need ? need
+    : m==="campana" ? "Crear campaña de 3 escenas ✨"
+    : m==="tryon" ? `Probar en ${state.modelos.length===1?"1 modelo":state.modelos.length+" modelos"} ✨`
+    : isEdit() ? `${EDIT[m][2]} · ${n} ✨`
+    : `Crear ${n}${state.extras.length?" del outfit":""} ✨`;
+}
+applyMode();
 function showErr(m){ $("err").textContent = m; }
 
 async function post(path, payload){
@@ -376,19 +468,30 @@ async function post(path, payload){
 }
 const esc = s => String(s??"").replace(/[&<>"]/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
 
+$("eopts").addEventListener("click", () => { $("eTxt").value=""; state.eTxt=""; });
+const b64 = d => d.split(",")[1];
 $("go").onclick = async () => {
   if(!state.img || state.busy) return;
+  const m = state.mode, ed = isEdit();
+  if(m==="tryon" && !state.modelos.length) return;
   state.busy = true; updateBtn(); showErr("");
   const codigo = $("code").value.trim(); try{ localStorage.setItem("em_code", codigo); }catch{}
   const base = { imagen: state.img, mime: state.mime, detalles: $("det").value, codigo, marca: marca.value };
+  const prendas = ed ? [] : state.extras.map(b64);
   $("empty").style.display = "none";
   const grid = $("grid"), ratio = state.format.replace(":"," / ");
-  const others = STYLES.map(x=>x[0]).filter(x=>x!==state.style).sort(()=>Math.random()-.5);
-  const jobs = state.mode==="campana" ? [state.style, others[0], others[1]] : Array(Number(state.count)).fill(state.style);
-  const n = jobs.length;
-  const slots = Array.from({length:n}, () => { const d=document.createElement("div"); d.className="res"; d.innerHTML=`<div class="skel" style="aspect-ratio:${ratio}">Creando…</div>`; grid.prepend(d); return d; });
+  let jobs;
+  if(ed){ const opcion = state.eTxt || state.eopt; jobs = Array(Number(state.count)).fill({ estilo: m, opcion }); }
+  else if(m==="tryon"){ jobs = state.modelos.map(mo => ({ estilo: "prueba-virtual", modelo: b64(mo), area: state.area, prendas, color: state.color })); }
+  else {
+    const others = STYLES.map(x=>x[0]).filter(x=>x!==state.style).sort(()=>Math.random()-.5);
+    const styles = m==="campana" ? [state.style, others[0], others[1]] : Array(Number(state.count)).fill(state.style);
+    const mo = state.modelos[0] ? { modelo: b64(state.modelos[0]) } : {};
+    jobs = styles.map(st => ({ estilo: st, prendas, color: state.color, ...mo }));
+  }
+  const slots = jobs.map(() => { const d=document.createElement("div"); d.className="res"; d.innerHTML=`<div class="skel" style="aspect-ratio:${ratio}">Creando…</div>`; grid.prepend(d); return d; });
   const ficha = $("ficha");
-  const fichaP = post("/api/ficha", base).then(f => {
+  const fichaP = ed ? Promise.resolve() : post("/api/ficha", base).then(f => {
     const row = (k,t) => f[k] ? `<div class="fi"><button class="copy" data-t="${esc(f[k])}">Copiar</button><b>${t}</b><p>${esc(f[k])}</p></div>` : "";
     ficha.innerHTML = `<h3>${esc(f.nombre||"Tu producto")}</h3>${row("descripcion","Descripción")}${row("estilismo","Estilismo")}${row("caption","Caption")}${row("hashtags","Hashtags")}`;
     ficha.style.display = "block";
@@ -396,10 +499,11 @@ $("go").onclick = async () => {
   let ok = 0, lastErr = "";
   await Promise.all(slots.map(async (slot, i) => {
     try{
-      const r = await post("/api/generate", { ...base, estilo: jobs[i], formato: state.format, color: state.color, ...(state.modelo ? { modelo: state.modelo } : {}) });
+      const r = await post("/api/generate", { ...base, ...jobs[i], formato: state.format });
       const src = `data:${r.mime};base64,${r.imagen}`;
-      slot.innerHTML = `<img src="${src}" alt="Foto generada"><div class="dl"><button class="btn btn-g vbtn" style="background:rgba(0,0,0,.6)">🎬 Vídeo</button><a class="btn btn-o" download="estudio-moda-${Date.now()}-${i+1}.png" href="${src}">Descargar</a></div>`;
+      slot.innerHTML = `<img src="${src}" alt="Foto generada"><div class="dl"><button class="btn btn-g ebtn" style="background:rgba(0,0,0,.6)">✏️ Editar</button><button class="btn btn-g vbtn" style="background:rgba(0,0,0,.6)">🎬 Vídeo</button><a class="btn btn-o" download="estudio-moda-${Date.now()}-${i+1}.png" href="${src}">Descargar</a></div>`;
       slot.querySelector(".vbtn").onclick = () => makeVideo(src, slot);
+      slot.querySelector(".ebtn").onclick = () => editPhoto(src);
       ok++;
     }catch(e){ lastErr = e.message; slot.remove(); }
   }));
@@ -407,6 +511,13 @@ $("go").onclick = async () => {
   if(!ok){ showErr(lastErr || "No se pudo crear la foto."); if(!grid.children.length) $("empty").style.display="flex"; }
   state.busy = false; updateBtn();
 };
+// «Editar»: la foto creada pasa a ser la foto a cambiar (postura, ángulo o escena)
+async function editPhoto(src){
+  state.mode = "cambiar-postura";
+  $("modes").querySelectorAll(".chip").forEach(x=>x.classList.toggle("on", x.dataset.v===state.mode));
+  setMain(await toData(src)); applyMode();
+  $("crear").scrollIntoView({behavior:"smooth"});
+}
 async function toJpeg(src){
   const im = new Image(); im.src = src; await im.decode();
   const s = Math.min(1, 1280/Math.max(im.width, im.height));
