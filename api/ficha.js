@@ -9,11 +9,12 @@ export default async function handler(req, res) {
     const { imagen, mime = "image/jpeg", detalles = "" } = body;
     if (!imagen) return res.status(400).json({ error: "Falta la foto de la prenda." });
 
-    const prompt = `Eres copywriter de moda para boutiques en español (tono cercano, elegante y vendedor).
-Mira la prenda de la foto y devuelve SOLO un JSON con estas claves:
+    const prod = body.tipo === "producto";
+    const prompt = `Eres copywriter ${prod ? "de productos para tiendas online y redes" : "de moda para boutiques"} en español (tono cercano, elegante y vendedor).
+Mira ${prod ? "el producto" : "la prenda"} de la foto y devuelve SOLO un JSON con estas claves:
 "nombre": nombre comercial corto del producto,
 "descripcion": descripción para la tienda online (2-3 frases, materiales/estilo aparentes, sin inventar tallas ni precios),
-"estilismo": una frase de cómo combinarla,
+"estilismo": ${prod ? "una frase de cómo usarlo o para quién es ideal" : "una frase de cómo combinarla"},
 "caption": caption para Instagram con gancho y llamada a la acción, con 2-3 emojis,
 "hashtags": 8 hashtags en español separados por espacios.
 ${detalles ? `Datos de la tienda: ${String(detalles).slice(0, 400)}` : ""}`;

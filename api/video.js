@@ -9,6 +9,13 @@ const MOVES = {
   viento: "Soft breeze moves the fabric and hair, the model smiles and adjusts the garment naturally.",
 };
 
+const PMOVES = {
+  resena: "Authentic UGC review filmed on a phone: the person holds the product up to the camera, shows the label, and talks enthusiastically about it as if recommending it to a friend.",
+  uso: "Authentic UGC video: the person uses the product naturally (applies it, tastes it or wears it) and reacts with a genuine happy expression.",
+  unboxing: "UGC unboxing: hands take the product out of the package, turn it to show every side and hold it close to the camera.",
+  giro: "Product showcase without people: slow smooth orbit around the product, soft light highlights, premium commercial look.",
+};
+
 function findVideo(node) {
   if (!node || typeof node !== "object") return null;
   if (node.type === "video" && (node.uri || node.data)) return node;
@@ -25,10 +32,18 @@ export default async function handler(req, res) {
     const body = readBody(req);
     const denied = checkAccess(req, body, "video");
     if (denied) return res.status(403).json({ error: denied });
-    const { imagen, mime = "image/png", movimiento = "pasarela", detalles = "" } = body;
+    const { imagen, mime = "image/png", movimiento = "pasarela", detalles = "", guion = "" } = body;
+    const isProd = body.tipo === "producto";
     if (!imagen) return res.status(400).json({ error: "Falta la foto para el vídeo." });
 
-    const prompt = [
+    const prompt = isProd ? [
+      "Vertical 9:16 UGC style video for Instagram Reels and TikTok, based on the reference photo, handheld smartphone feel.",
+      PMOVES[movimiento] || PMOVES.resena,
+      "Keep the product exactly identical to the photo: same shape, colors, packaging, label, logo and printed text. Same person and setting.",
+      guion ? `The person speaks in Spanish (Spain), natural and warm, saying: "${String(guion).slice(0, 220)}"` : "Natural ambient sound.",
+      "Realistic motion. No added captions, no watermark.",
+      detalles ? `Extra details: ${String(detalles).slice(0, 300)}` : "",
+    ].filter(Boolean).join(" ") : [
       "Vertical 9:16 fashion video for Instagram Reels and TikTok, based on the reference photo.",
       MOVES[movimiento] || MOVES.pasarela,
       "Keep the garment exactly identical to the photo (color, fabric, pattern, cut, details). Same model and setting.",

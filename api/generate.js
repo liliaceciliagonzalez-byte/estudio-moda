@@ -21,6 +21,24 @@ const MODEL_LOCK =
   "The FIRST image is the garment. The SECOND image is the model. The person wearing the garment MUST be the exact same person as in the second image: identical face shape, eyes, nose, lips, eyebrows, skin tone, age, hair color and hairstyle, and approximate body type. Do not beautify, slim, age or change her face in any way. Face clearly visible and recognizable. Identity preservation is the top priority.";
 const RATIOS = ["3:4", "4:5", "9:16", "1:1"];
 
+// Modo producto (cosmética, perfumes, comida, accesorios…): fotos tipo UGC conservando el producto exacto.
+const PRODUCT_LOCK =
+  "Use the exact product from the reference image: identical shape, size proportions, colors, materials, packaging, cap, label layout, logo and printed text. Do not redesign, rename or invent text on it. The label must stay readable.";
+const PRODUCT_QUALITY =
+  "Photorealistic, natural light, authentic smartphone UGC look, sharp focus on the product. No added text, no watermark.";
+const PSTYLES = {
+  "ugc-selfie": "UGC selfie photo: a real-looking woman holds the product next to her face, smiling at the phone camera, cozy bedroom background, natural daylight.",
+  "ugc-uso": "UGC photo: a real-looking woman using the product the way it is meant to be used (applying it, tasting it, wearing it), candid moment at home, product clearly visible.",
+  "ugc-bano": "UGC photo in a bright modern bathroom: a woman in front of the mirror holding the product, morning routine vibe.",
+  "ugc-cocina": "UGC photo in a bright home kitchen: a woman holding the product toward the camera, friendly and spontaneous.",
+  "ugc-calle": "UGC photo outdoors in a sunny city street: a woman showing the product to the camera, lifestyle vibe.",
+  "unboxing": "Unboxing photo from above: hands opening a package and holding the product, tissue paper, cozy table, product clearly visible.",
+  "estudio-producto": "Clean e-commerce product photo: the product alone on a seamless soft background with a subtle shadow, studio lighting. No person.",
+  "bodegon": "Styled product still life: the product on a beige stone surface with natural props (leaves, fabric, water drops) matching its use, premium brand look. No person.",
+};
+const PMODEL =
+  "The person MUST be the exact same person as in the last image: identical face shape, eyes, nose, lips, eyebrows, skin tone, age, hair color and hairstyle. Do not beautify or change her face. Face clearly visible and recognizable.";
+
 // Herramientas de edición: parten de una foto ya hecha (con persona) y solo cambian una cosa.
 const EDIT_LOCK =
   "Edit this fashion photo. Keep EXACTLY the same person (face, hair, skin tone, body) and EXACTLY the same clothes, shoes and accessories with every detail, color and print. Do not add or remove clothing.";
@@ -44,14 +62,26 @@ export default async function handler(req, res) {
     const { imagen, mime = "image/jpeg", estilo, formato = "3:4", detalles = "", marca = "", modelo = "", color = "", area = "", opcion = "" } = body;
     const extras = (Array.isArray(body.prendas) ? body.prendas : []).filter(Boolean).slice(0, 3);
     const isEdit = !!EDITS[estilo];
-    if (!imagen || (!STYLES[estilo] && !isEdit)) return res.status(400).json({ error: "Falta la foto o el tipo de creación." });
+    const isProd = body.tipo === "producto";
+    if (isProd && !PSTYLES[estilo]) return res.status(400).json({ error: "Elige un estilo." });
+    if (!imagen || (!STYLES[estilo] && !isEdit && !isProd)) return res.status(400).json({ error: "Falta la foto o el tipo de creación." });
 
     const flash = process.env.GEMINI_IMAGE_MODEL || "gemini-2.5-flash-image";
     const pro = process.env.GEMINI_FACE_MODEL || "gemini-3-pro-image";
     const ratio = RATIOS.includes(formato) ? formato : "3:4";
 
     let prompt, parts;
-    if (isEdit) {
+    if (isProd) {
+      const nP = 1 + extras.length;
+      prompt = [PRODUCT_LOCK,
+        nP > 1 ? `The first ${nP} images are ${nP} different products that must ALL appear together, each one exactly as in its reference image.` : "",
+        modelo ? `Image ${nP + 1} (the last image) is the person. ${PMODEL}` : "",
+        PSTYLES[estilo],
+        marca ? `Brand style to respect (in Spanish): ${String(marca).slice(0, 400)}` : "",
+        detalles ? `Extra details from the seller (in Spanish): ${String(detalles).slice(0, 400)}` : "",
+        PRODUCT_QUALITY].filter(Boolean).join("\n\n");
+      parts = [{ text: prompt }, inline(imagen, mime), ...extras.map((d) => inline(d)), ...(modelo ? [inline(modelo)] : [])];
+    } else if (isEdit) {
       prompt = [EDIT_LOCK, EDITS[estilo](String(opcion).slice(0, 200)), detalles ? `Extra details (in Spanish): ${String(detalles).slice(0, 400)}` : "", QUALITY].filter(Boolean).join("\n\n");
       parts = [{ text: prompt }, inline(imagen, mime)];
     } else {
@@ -78,7 +108,7 @@ export default async function handler(req, res) {
     });
     // Con persona real (su modelo o una foto a editar) usamos el modelo Pro, que respeta mucho mejor la cara.
     let data, motor = flash, aviso = "";
-    if (modelo || isEdit || extras.length) {
+    if (modelo || isEdit || extras.length || isProd) {
       try { data = await run(pro); motor = pro; } catch (e) { aviso = String(e.message || e).slice(0, 200); data = await run(flash); }
     } else {
       data = await run(flash);
