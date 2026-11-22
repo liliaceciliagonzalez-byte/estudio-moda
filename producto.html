@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Estudio Producto · Fotos y vídeos UGC de tus productos con IA</title>
+<meta name="description" content="Sube la foto de tu producto y crea fotos y vídeos UGC con personas reales o tu propia modelo, con el producto exacto.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#121110;--card:#1c1a18;--line:#2e2a26;--cream:#F3E9DC;--muted:#b9ad9f;--orange:#FF6600;--turq:#19C3C0}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--cream);font-family:Inter,system-ui,sans-serif;line-height:1.5}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1140px;margin:0 auto;padding:0 20px}
+nav{position:sticky;top:0;z-index:20;background:rgba(18,17,16,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{font-family:Anton;font-size:24px;letter-spacing:.5px}.logo b{color:var(--orange);font-weight:400}.logo i{color:var(--turq);font-style:normal}
+.links{display:flex;gap:26px;font-size:14px;color:var(--muted)}.links a:hover{color:var(--cream)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:999px;padding:13px 24px;font:600 15px Inter;cursor:pointer;transition:.2s}
+.btn-o{background:var(--orange);color:#1a0d00}.btn-o:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.btn-g{background:transparent;color:var(--cream);border:1px solid var(--line)}.btn-g:hover{border-color:var(--turq);color:var(--turq)}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.kicker{font-family:'DM Serif Display';font-size:22px;color:var(--turq)}
+h1,h2{font-family:Anton;font-weight:400;line-height:1;text-transform:uppercase}
+h1{font-size:clamp(46px,7vw,86px)}h1 em,h2 em{font-family:'DM Serif Display';font-style:italic;text-transform:none;color:var(--orange)}
+h2{font-size:clamp(34px,5vw,56px);margin:6px 0 14px}
+.lead{color:var(--muted);font-size:18px;max-width:560px}
+section{padding:80px 0}
+.hero{padding:60px 0 40px}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center}
+.hero-img{border-radius:24px;overflow:hidden;border:1px solid var(--line);position:relative}
+.hero-img img{width:100%;display:block}
+.tag{position:absolute;bottom:14px;padding:6px 14px;border-radius:999px;font-size:13px;font-weight:600;background:rgba(0,0,0,.65)}
+.tag.a{left:14px}.tag.b{right:14px;color:var(--turq)}
+.cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+.mini{font-size:13px;color:var(--muted);margin-top:12px}
+/* STUDIO */
+#crear{background:linear-gradient(180deg,#171513,#121110)}
+.studio{display:grid;grid-template-columns:380px 1fr;gap:24px;margin-top:30px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:20px}
+.drop{border:1.5px dashed #5a5047;border-radius:16px;min-height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:8px;cursor:pointer;padding:16px;transition:.2s;position:relative;overflow:hidden}
+.drop:hover,.drop.over{border-color:var(--orange);background:rgba(255,102,0,.05)}
+.drop img{max-height:260px;max-width:100%;border-radius:10px}
+.drop .x{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.7);border:0;color:#fff;border-radius:999px;width:30px;height:30px;cursor:pointer;font-size:16px}
+.lbl{font-size:13px;font-weight:600;color:var(--muted);margin:18px 0 8px;text-transform:uppercase;letter-spacing:.06em}
+.styles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.st{border:2px solid transparent;border-radius:12px;overflow:hidden;cursor:pointer;background:#000;position:relative;padding:0}
+.st img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block;opacity:.85}
+.st .em{aspect-ratio:3/4;display:flex;align-items:center;justify-content:center;font-size:34px;background:linear-gradient(160deg,#2a2420,#1a1715)}
+.st span{position:absolute;left:0;right:0;bottom:0;font-size:11px;font-weight:600;padding:14px 4px 5px;background:linear-gradient(transparent,rgba(0,0,0,.85));color:var(--cream)}
+.st.on{border-color:var(--orange)}.st.on img{opacity:1}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line);background:transparent;color:var(--cream);border-radius:999px;padding:8px 14px;font:500 13px Inter;cursor:pointer}
+.chip.on{border-color:var(--turq);color:var(--turq);background:rgba(25,195,192,.08)}
+textarea,input[type=text]{width:100%;background:#141210;border:1px solid var(--line);color:var(--cream);border-radius:12px;padding:12px;font:14px Inter;resize:vertical}
+textarea:focus,input:focus{outline:none;border-color:var(--turq)}
+.go{width:100%;margin-top:20px;padding:16px}
+.err{color:#ff8a8a;font-size:14px;margin-top:10px;min-height:20px}
+.results{min-height:560px;display:flex;flex-direction:column;gap:18px}
+.empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--muted);gap:10px}
+.empty .ph{display:flex;gap:10px;opacity:.55}.empty .ph img{width:110px;border-radius:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.res{background:#000;border-radius:16px;overflow:hidden;border:1px solid var(--line);position:relative}
+.res img{width:100%;display:block}
+.res .dl{position:absolute;right:10px;bottom:10px}
+.res .dl .btn{padding:8px 14px;font-size:13px}
+.skel{aspect-ratio:3/4;background:linear-gradient(100deg,#1c1a18 30%,#2a2622 50%,#1c1a18 70%);background-size:200% 100%;animation:sh 1.3s infinite;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px}
+@keyframes sh{to{background-position:-200% 0}}
+.ficha{background:#141210;border:1px solid var(--line);border-radius:16px;padding:18px;display:none}
+.ficha h3{font-family:'DM Serif Display';font-weight:400;font-size:26px;color:var(--orange);margin-bottom:6px}
+.fi{margin-top:12px}.fi b{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--turq);margin-bottom:3px}
+.fi p{color:var(--cream);font-size:14px;white-space:pre-wrap}
+.copy{float:right;background:none;border:0;color:var(--muted);cursor:pointer;font-size:12px}.copy:hover{color:var(--turq)}
+/* sections */
+.ba{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:30px}
+.ba figure{border-radius:18px;overflow:hidden;border:1px solid var(--line);background:var(--card)}
+.ba img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block}
+.ba figcaption{padding:12px 14px;font-size:14px;color:var(--muted)}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:30px}
+.step{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:26px}
+.step .n{font-family:Anton;font-size:54px;color:var(--orange);line-height:1}
+.step h3{font-family:'DM Serif Display';font-weight:400;font-size:24px;margin:8px 0}
+.step p{color:var(--muted);font-size:15px}
+.feat{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:30px}
+.f{border:1px solid var(--line);border-radius:18px;padding:20px}
+.f .ic{font-size:26px}.f h4{margin:10px 0 4px;font-size:16px}.f p{color:var(--muted);font-size:14px}
+.soon{font-size:11px;color:var(--turq);border:1px solid var(--turq);border-radius:999px;padding:1px 8px;margin-left:6px}
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:30px}
+.plan{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:28px;display:flex;flex-direction:column;gap:12px}
+.plan.hot{border-color:var(--orange);box-shadow:0 0 0 1px var(--orange) inset}
+.plan .p{font-family:Anton;font-size:48px}.plan .p small{font:500 15px Inter;color:var(--muted)}
+.plan ul{list-style:none;color:var(--muted);font-size:15px;display:flex;flex-direction:column;gap:7px;flex:1}
+.plan li:before{content:"✓ ";color:var(--turq)}
+.faq{margin-top:26px;display:flex;flex-direction:column;gap:10px}
+details{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 20px}
+summary{cursor:pointer;font-weight:600}details p{color:var(--muted);margin-top:8px}
+.final{text-align:center;border:1px solid var(--line);border-radius:28px;padding:56px 20px;background:radial-gradient(circle at 50% 0,rgba(255,102,0,.18),transparent 60%)}
+footer{border-top:1px solid var(--line);padding:30px 0;color:var(--muted);font-size:14px}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.res .dl{display:flex;gap:6px}
+.vid{background:#000;border-radius:16px;overflow:hidden;border:1px solid var(--turq);position:relative}
+.vid video{width:100%;display:block;aspect-ratio:9/16;background:#000}
+.vid .dl{position:absolute;right:10px;bottom:10px}
+.vid .skel{aspect-ratio:9/16;text-align:center;padding:20px}
+.drop.small{min-height:120px;margin-top:8px}
+.drop.small img{max-height:150px}
+.thumbs{display:flex;gap:8px;flex-wrap:wrap}
+.th{width:78px;height:100px;border-radius:12px;border:1.5px dashed #5a5047;position:relative;overflow:hidden;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:24px;color:var(--muted);background:transparent;transition:.2s}
+.th:hover,.th.over{border-color:var(--orange);background:rgba(255,102,0,.05)}
+.th.has{border-style:solid;border-color:var(--line)}
+.th img{width:100%;height:100%;object-fit:cover}
+.th .x{position:absolute;top:4px;right:4px;background:rgba(0,0,0,.7);border:0;color:#fff;border-radius:999px;width:22px;height:22px;cursor:pointer;font-size:12px}
+.urlrow{display:flex;gap:8px;margin-top:10px}.urlrow input{flex:1}
+.res .dl{flex-wrap:wrap;justify-content:flex-end}
+.tryon{display:flex;align-items:center;gap:14px;margin-top:30px;flex-wrap:wrap;justify-content:center}
+.tryon figure{border-radius:18px;overflow:hidden;border:1px solid var(--line);background:var(--card);width:220px}
+.tryon img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block}
+.tryon figcaption{padding:10px 12px;font-size:13px;color:var(--muted)}
+.tryon .arr{font-family:Anton;font-size:40px;color:var(--orange)}
+.legal{font-size:11px;color:var(--muted);margin-top:8px}
+.upsell{display:none;margin-top:12px;border:1px solid var(--orange);border-radius:14px;padding:14px;font-size:14px}
+.upsell a{color:var(--orange);font-weight:600}
+details.brand{margin-top:14px;background:#141210}
+details.brand summary{font-size:13px}
+.toggle{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:4px;margin-top:10px}
+.toggle button{border:0;background:none;color:var(--muted);padding:8px 16px;border-radius:999px;font:600 14px Inter;cursor:pointer}
+.toggle button.on{background:var(--cream);color:#121110}
+.save{font-size:12px;color:var(--turq);margin-left:6px}
+.guar{font-size:13px;color:var(--muted)}
+.founder{display:grid;grid-template-columns:1fr 1.4fr;gap:30px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:34px}
+.founder q{font-family:'DM Serif Display';font-size:26px;line-height:1.3;display:block}
+.founder small{display:block;margin-top:14px;color:var(--turq);font-size:15px}
+@media(max-width:900px){.founder{grid-template-columns:1fr}}
+@media(max-width:900px){.hero-grid,.studio,.steps,.plans,.ba{grid-template-columns:1fr}.feat{grid-template-columns:1fr 1fr}.links{display:none}}
+</style>
+</head>
+<body>
+<nav><div class="wrap">
+  <a class="logo" href="/producto.html">ESTUDIO <b>PRODUCTO</b> <i>·</i></a>
+  <div class="links"><a href="#crear">Crear</a><a href="#como">Cómo funciona</a><a href="#precios">Precios</a><a href="/">¿Vendes ropa? Estudio Moda</a></div>
+  <a class="btn btn-o" href="#crear">Probar gratis</a>
+</div></nav>
+
+<header class="hero"><div class="wrap hero-grid">
+  <div>
+    <div class="kicker">Para marcas y tiendas de productos</div>
+    <h1>Vídeos UGC <em>sin buscar creadoras</em></h1>
+    <p class="lead">Sube la foto de tu producto y crea fotos y vídeos de personas enseñándolo, usándolo y recomendándolo. El producto sale exacto: forma, colores y etiqueta.</p>
+    <div class="cta-row"><a class="btn btn-o" href="#crear">Subir mi producto</a><a class="btn btn-g" href="#como">Ver cómo funciona</a></div>
+    <p class="mini">Cosmética · Perfumes · Comida · Suplementos · Accesorios</p>
+  </div>
+  <div class="hero-img">
+    <img src="/demo/producto-ugc.jpg" alt="Foto UGC creada a partir de la foto del producto">
+    <span class="tag a">Antes: foto del producto</span><span class="tag b">Después: UGC en 1 minuto</span>
+  </div>
+</div></header>
+
+<section id="crear"><div class="wrap">
+  <div class="kicker">Tu estudio</div>
+  <h2>Sube tu producto y <em>crea tu UGC</em></h2>
+  <div class="studio">
+    <div class="panel">
+      <div class="lbl" style="margin-top:0">Qué crear</div>
+      <div class="chips" id="modes"></div>
+      <div class="lbl">Tu producto</div>
+      <div class="drop" id="drop">
+        <input type="file" id="file" accept="image/*" hidden>
+        <div id="dropEmpty"><div style="font-size:34px">📦</div><b>Sube la foto de tu producto</b><div class="mini">Con buena luz y la etiqueta visible · JPG o PNG</div></div>
+      </div>
+      <div class="urlrow"><input type="text" id="urlIn" placeholder="o pega el enlace de la foto (de tu web o tienda)"><button class="chip" id="urlBtn">Usar</button></div>
+      <div class="lbl">Más productos (opcional)</div>
+      <div class="thumbs" id="extras"></div>
+      <div class="mini">Añade hasta 3 productos más para mostrar un kit o una rutina.</div>
+      <div class="lbl">Tu modelo (opcional)</div>
+      <div class="thumbs" id="models"></div>
+      <div class="mini">Sube la foto de tu modelo y saldrá ella. Si no subes nada, usamos una persona IA.</div>
+      <div class="legal">Al subir fotos confirmas que tienes derecho a usarlas y el permiso de las personas que aparezcan.</div>
+      <div class="lbl">Estilo</div>
+      <div class="styles" id="styles"></div>
+      <div class="lbl">Formato</div>
+      <div class="chips" id="formats"></div>
+      <div id="countBox"><div class="lbl">Fotos</div><div class="chips" id="counts"></div></div>
+      <div class="lbl">Tipo de vídeo 9:16</div>
+      <div class="chips" id="moves"></div>
+      <div class="lbl">Lo que dice en el vídeo (opcional)</div>
+      <textarea id="guion" rows="2" maxlength="220" placeholder="Ej.: Llevo dos semanas usando este sérum y mi piel está más luminosa. ¡Os lo recomiendo!"></textarea>
+      <div class="lbl">Detalles (opcional)</div>
+      <textarea id="det" rows="2" placeholder="Ej.: mujer de 35 años, piel morena, ambiente cálido"></textarea>
+      <details class="brand"><summary>Mi estilo de marca <span class="save" id="brandSaved"></span></summary><textarea id="marca" rows="3" style="margin-top:10px" placeholder="Ej.: tonos verdes y naturales, ambiente fresco y limpio"></textarea><div class="mini">Se guarda y se aplica a todas tus creaciones.</div></details>
+      <div id="codeBox" style="display:none"><div class="lbl">Código de acceso</div><input type="text" id="code" placeholder="Tu código de plan"></div>
+      <button class="btn btn-o go" id="go" disabled>Sube tu producto primero</button>
+      <div class="err" id="err"></div>
+      <div class="upsell" id="upsell">Ya usaste tu prueba gratis. <a href="#precios">Elige tu plan</a> y te damos tu código al momento.</div>
+    </div>
+    <div class="panel results" id="results">
+      <div class="empty" id="empty">
+        <div style="font-size:46px">🎬</div>
+        <b style="color:var(--cream);font-size:18px">Aquí aparecerán tus fotos y vídeos</b>
+        <span>Con «Vídeo UGC» sale el vídeo directamente. En «Fotos UGC», toca «Vídeo» en la foto que más te guste para convertirla en un reel 9:16.</span>
+      </div>
+      <div class="grid" id="grid"></div>
+      <div class="ficha" id="ficha"></div>
+    </div>
+  </div>
+</div></section>
+
+<section id="como"><div class="wrap">
+  <div class="kicker">Así de fácil</div>
+  <h2>Cómo funciona <em>en 3 pasos</em></h2>
+  <div class="steps">
+    <div class="step"><div class="n">1</div><h3>Sube tu producto</h3><p>Una foto con el móvil basta. Si quieres, sube también la foto de tu modelo.</p></div>
+    <div class="step"><div class="n">2</div><h3>Elige el estilo</h3><p>Selfie, uso real, baño, cocina, unboxing o foto de catálogo.</p></div>
+    <div class="step"><div class="n">3</div><h3>Descarga y publica</h3><p>Fotos y vídeos UGC 9:16 con descripción y caption listos para vender.</p></div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="kicker">Todo en un lugar</div>
+  <h2>Tu contenido UGC <em>sin depender de nadie</em></h2>
+  <div class="feat">
+    <div class="f"><div class="ic">🎯</div><h4>Producto exacto</h4><p>Se conserva la forma, los colores y la etiqueta.</p></div>
+    <div class="f"><div class="ic">🤳🏽</div><h4>Vídeos UGC</h4><p>Reseña, uso real, unboxing o giro de producto.</p></div>
+    <div class="f"><div class="ic">💃</div><h4>Tu propia modelo</h4><p>Sube su foto o usa una persona IA.</p></div>
+    <div class="f"><div class="ic">🗣️</div><h4>Con guion</h4><p>Escribe lo que dice y lo dice en el vídeo.</p></div>
+    <div class="f"><div class="ic">🧴</div><h4>Kits y rutinas</h4><p>Hasta 4 productos juntos en la misma foto.</p></div>
+    <div class="f"><div class="ic">📸</div><h4>Fotos de catálogo</h4><p>Producto solo o bodegón para tu tienda.</p></div>
+    <div class="f"><div class="ic">✍️</div><h4>Textos de producto</h4><p>Nombre, descripción, caption y hashtags.</p></div>
+    <div class="f"><div class="ic">🔗</div><h4>Desde un enlace</h4><p>Pega el enlace de la foto de tu web y listo.</p></div>
+  </div>
+</div></section>
+
+<section id="precios"><div class="wrap">
+  <div class="kicker">Planes</div>
+  <h2>Elige tu plan y <em>vende más</em></h2>
+  <p class="lead">Escríbenos por Instagram y te damos tu código de acceso al momento.</p>
+  <div class="plans">
+    <div class="plan"><b>Starter</b><p class="guar">Para tiendas que empiezan con contenido UGC.</p><div class="p">29 € <small>/mes</small></div><ul><li>75 créditos al mes</li><li>Fotos UGC y de catálogo</li><li>Acceso a vídeos UGC</li><li>Textos de producto</li></ul><a class="btn btn-o" href="https://ig.me/m/lilia0908" target="_blank" rel="noopener">Comenzar Starter</a></div>
+    <div class="plan hot"><b>Growth · Más popular</b><p class="guar">Para marcas que publican cada semana.</p><div class="p">69 € <small>/mes</small></div><ul><li>200 créditos al mes</li><li>Vídeos UGC con guion</li><li>Estilo guardado de tu marca</li><li>Soporte por WhatsApp</li></ul><a class="btn btn-o" href="https://ig.me/m/lilia0908" target="_blank" rel="noopener">Comenzar Growth</a></div>
+    <div class="plan"><b>Paquete fundador</b><p class="guar">Para negocios que quieren su propia app.</p><div class="p" style="font-size:34px">A medida</div><ul><li>Tu propia app con tu marca</li><li>Funciones pensadas para tu negocio</li><li>Cotización personalizada</li></ul><a class="btn btn-g" href="https://ig.me/m/lilia0908" target="_blank" rel="noopener">Pedir cotización</a></div>
+  </div>
+</div></section>
+
+<footer><div class="wrap"><span>© 2026 Estudio Producto · by Lili@0908</span><a href="/">Estudio Moda</a><a href="https://instagram.com/lilia0908" target="_blank" rel="noopener">Instagram @lilia0908</a></div></footer>
+
+<script>
+const PSTY = [["ugc-selfie","Selfie con producto","🤳🏽"],["ugc-uso","Usándolo","✨"],["ugc-bano","Rutina en el baño","🪞"],["ugc-cocina","En la cocina","🍳"],["ugc-calle","En la calle","🏙️"],["unboxing","Unboxing","📦"],["estudio-producto","Catálogo","🛍️"],["bodegon","Bodegón","🌿"]];
+const MODES = [["video","Vídeo UGC"],["foto","Fotos UGC"]];
+const FORMATS = [["9:16","Reels 9:16"],["4:5","Feed 4:5"],["3:4","Tienda 3:4"],["1:1","Cuadrado 1:1"]];
+const MOVES = [["resena","Reseña"],["uso","Usándolo"],["unboxing","Unboxing"],["giro","Giro de producto"]];
+const $ = id => document.getElementById(id);
+const state = { img:null, mime:"image/jpeg", style:"ugc-selfie", format:"9:16", count:"2", mode:"video", move:"resena", extras:[], modelos:[], busy:false };
+$("styles").innerHTML = PSTY.map(([id,t,e]) => `<button class="st${id===state.style?" on":""}" data-id="${id}"><div class="em">${e}</div><span>${t}</span></button>`).join("");
+$("styles").onclick = e => { const b = e.target.closest(".st"); if(!b) return; state.style=b.dataset.id; document.querySelectorAll(".st").forEach(x=>x.classList.toggle("on",x===b)); };
+const chips = (el, items, key) => { $(el).innerHTML = items.map(([v,t]) => `<button class="chip${v===state[key]?" on":""}" data-v="${v}">${t}</button>`).join("");
+  $(el).onclick = e => { const b=e.target.closest(".chip"); if(!b) return; state[key]=b.dataset.v; $(el).querySelectorAll(".chip").forEach(x=>x.classList.toggle("on",x===b)); applyMode(); }; };
+chips("modes", MODES, "mode"); chips("formats", FORMATS, "format"); chips("moves", MOVES, "move");
+chips("counts", ["1","2","3","4"].map(c=>[c, c==="1"?"1 foto":`${c} fotos`]), "count");
+const marca = $("marca");
+try{ marca.value = localStorage.getItem("ep_marca")||""; }catch{}
+marca.oninput = () => { try{ localStorage.setItem("ep_marca", marca.value); $("brandSaved").textContent = "guardado ✓"; }catch{} };
+fetch("/api/config").then(r=>r.ok?r.json():null).then(c=>{ if(c?.codigo) $("codeBox").style.display="block"; }).catch(()=>{});
+try{ $("code").value = localStorage.getItem("em_code")||""; }catch{}
+
+function toData(src){ return new Promise((ok,ko)=>{ const im=new Image(); im.onload=()=>{
+  const s=Math.min(1,1280/Math.max(im.width,im.height)); const c=document.createElement("canvas"); c.width=Math.round(im.width*s); c.height=Math.round(im.height*s);
+  const x=c.getContext("2d"); x.fillStyle="#fff"; x.fillRect(0,0,c.width,c.height); x.drawImage(im,0,0,c.width,c.height); ok(c.toDataURL("image/jpeg",.9)); };
+  im.onerror=()=>ko(new Error("No se pudo abrir esa imagen.")); im.src=src; }); }
+const fileData = f => f.type.startsWith("image/") ? toData(URL.createObjectURL(f)) : Promise.reject(new Error("Sube una imagen (JPG o PNG)."));
+const drop = $("drop"), file = $("file"), dropEmptyHTML = $("dropEmpty").outerHTML;
+drop.onclick = e => { if(e.target.classList.contains("x")) return; file.click(); };
+drop.ondragover = e => { e.preventDefault(); drop.classList.add("over"); };
+drop.ondragleave = () => drop.classList.remove("over");
+drop.ondrop = e => { e.preventDefault(); drop.classList.remove("over"); if(e.dataTransfer.files[0]) fileData(e.dataTransfer.files[0]).then(setMain).catch(er=>showErr(er.message)); };
+file.onchange = () => { file.files[0] && fileData(file.files[0]).then(setMain).catch(er=>showErr(er.message)); file.value=""; };
+function setMain(data){
+  state.img = data.split(",")[1];
+  drop.innerHTML = `<img src="${data}" alt="Tu producto"><button class="x" title="Quitar">✕</button>`;
+  drop.querySelector(".x").onclick = ev => { ev.stopPropagation(); state.img=null; drop.innerHTML=dropEmptyHTML; drop.appendChild(file); updateBtn(); };
+  drop.appendChild(file); showErr(""); updateBtn();
+}
+$("urlBtn").onclick = async () => {
+  const u = $("urlIn").value.trim();
+  if(!/^https?:\/\//i.test(u)) return showErr("Pega un enlace que empiece por https://");
+  $("urlBtn").textContent = "…";
+  try{ const data = await toData("/api/img?url="+encodeURIComponent(u));
+    if(!state.img) setMain(data); else if(state.extras.length<3){ state.extras.push(data); renderThumbs(); } else showErr("Ya tienes 4 productos.");
+    $("urlIn").value=""; showErr("");
+  }catch(e){ showErr("No se pudo cargar esa imagen. Usa el enlace directo de la foto."); }
+  $("urlBtn").textContent = "Usar";
+};
+function thumbs(el, list, max){
+  const box = $(el);
+  box.innerHTML = list.map((d,i)=>`<div class="th has"><img src="${d}" alt=""><button class="x" data-i="${i}" title="Quitar">✕</button></div>`).join("") + (list.length<max ? `<div class="th add">+</div>` : "");
+  box.querySelectorAll(".x").forEach(b => b.onclick = e => { e.stopPropagation(); list.splice(+b.dataset.i,1); renderThumbs(); });
+  const add = box.querySelector(".add"); if(!add) return;
+  const inp = document.createElement("input"); inp.type="file"; inp.accept="image/*"; inp.multiple = max-list.length>1; inp.hidden=true; add.appendChild(inp);
+  const take = async fs => { for(const f of [...fs]){ if(list.length>=max) break; try{ list.push(await fileData(f)); }catch(e){ showErr(e.message); } } renderThumbs(); };
+  add.onclick = e => { if(e.target===inp) return; inp.click(); };
+  inp.onchange = () => take(inp.files);
+  add.ondragover = e => { e.preventDefault(); add.classList.add("over"); };
+  add.ondragleave = () => add.classList.remove("over");
+  add.ondrop = e => { e.preventDefault(); take(e.dataTransfer.files); };
+}
+function renderThumbs(){ thumbs("extras", state.extras, 3); thumbs("models", state.modelos, 1); updateBtn(); }
+function applyMode(){ $("countBox").style.display = state.mode==="foto" ? "" : "none"; updateBtn(); }
+function updateBtn(){ const b=$("go"); b.disabled = !state.img || state.busy;
+  b.textContent = state.busy ? "Creando…" : !state.img ? "Sube tu producto primero" : state.mode==="video" ? "Crear vídeo UGC 🎬" : `Crear ${state.count==="1"?"1 foto":state.count+" fotos"} UGC ✨`; }
+function showErr(m){ $("err").textContent = m; }
+async function post(path, payload){
+  const r = await fetch(path,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(payload)});
+  const j = await r.json().catch(()=>({error:"Respuesta no válida del servidor"}));
+  if(r.status===403) $("upsell").style.display="block";
+  if(!r.ok) throw new Error(j.error||"Error");
+  return j;
+}
+const esc = s => String(s??"").replace(/[&<>"]/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
+const b64 = d => d.split(",")[1];
+$("go").onclick = async () => {
+  if(!state.img || state.busy) return;
+  state.busy = true; updateBtn(); showErr("");
+  const codigo = $("code").value.trim(); try{ localStorage.setItem("em_code", codigo); }catch{}
+  const base = { tipo:"producto", imagen: state.img, mime:"image/jpeg", detalles: $("det").value, codigo, marca: marca.value };
+  $("empty").style.display = "none";
+  const grid = $("grid");
+  const fmt = state.mode==="video" ? "9:16" : state.format;
+  const n = state.mode==="video" ? 1 : Number(state.count);
+  const job = { ...base, estilo: state.style, formato: fmt, prendas: state.extras.map(b64), ...(state.modelos[0] ? { modelo: b64(state.modelos[0]) } : {}) };
+  const slots = Array.from({length:n}, () => { const d=document.createElement("div"); d.className="res"; d.innerHTML=`<div class="skel" style="aspect-ratio:${fmt.replace(":"," / ")}">Creando…</div>`; grid.prepend(d); return d; });
+  const fichaP = post("/api/ficha", base).then(f => {
+    const row = (k,t) => f[k] ? `<div class="fi"><button class="copy" data-t="${esc(f[k])}">Copiar</button><b>${t}</b><p>${esc(f[k])}</p></div>` : "";
+    $("ficha").innerHTML = `<h3>${esc(f.nombre||"Tu producto")}</h3>${row("descripcion","Descripción")}${row("estilismo","Para quién es")}${row("caption","Caption")}${row("hashtags","Hashtags")}`;
+    $("ficha").style.display = "block";
+  }).catch(()=>{});
+  let ok = 0, lastErr = "";
+  await Promise.all(slots.map(async (slot, i) => {
+    try{
+      const r = await post("/api/generate", job);
+      const src = `data:${r.mime};base64,${r.imagen}`;
+      slot.innerHTML = `<img src="${src}" alt="Foto UGC"><div class="dl"><button class="btn btn-g vbtn" style="background:rgba(0,0,0,.6)">🎬 Vídeo</button><a class="btn btn-o" download="estudio-producto-${Date.now()}-${i+1}.png" href="${src}">Descargar</a></div>`;
+      slot.querySelector(".vbtn").onclick = () => makeVideo(src, slot);
+      ok++;
+      if(state.mode==="video") await makeVideo(src, slot);
+    }catch(e){ lastErr = e.message; slot.remove(); }
+  }));
+  await fichaP;
+  if(!ok){ showErr(lastErr || "No se pudo crear."); if(!grid.children.length) $("empty").style.display="flex"; }
+  state.busy = false; updateBtn();
+};
+async function toJpeg(src){ return b64(await toData(src)); }
+async function makeVideo(src, after){
+  const box = document.createElement("div"); box.className="vid";
+  box.innerHTML = `<div class="skel">Creando tu vídeo UGC 9:16…<br>Puede tardar 1-3 minutos</div>`;
+  after.after(box);
+  try{
+    const r = await post("/api/video", { tipo:"producto", imagen: await toJpeg(src), mime:"image/jpeg", movimiento: state.move, guion: $("guion").value.trim(), detalles: $("det").value, codigo: $("code").value.trim() });
+    let url;
+    if(r.inline){ url = URL.createObjectURL(await (await fetch(`data:${r.mime};base64,${r.video}`)).blob()); }
+    else {
+      for(let i=0;i<60;i++){
+        const f = await fetch(`/api/video-archivo?id=${encodeURIComponent(r.archivo)}`);
+        if(f.status===200){ url = URL.createObjectURL(await f.blob()); break; }
+        if(f.status!==202){ const j = await f.json().catch(()=>({})); throw new Error(j.error||"No se pudo descargar el vídeo"); }
+        await new Promise(ok=>setTimeout(ok,4000));
+      }
+      if(!url) throw new Error("El vídeo tardó demasiado. Prueba otra vez.");
+    }
+    box.innerHTML = `<video src="${url}" controls playsinline loop autoplay></video><div class="dl"><a class="btn btn-o" download="estudio-producto-video-${Date.now()}.mp4" href="${url}">Descargar</a></div>`;
+  }catch(e){ box.innerHTML = `<div class="skel" style="animation:none;color:#ff8a8a">No se pudo crear el vídeo:<br>${esc(e.message)}</div>`; }
+}
+document.addEventListener("click", e => { const b=e.target.closest(".copy"); if(!b) return; navigator.clipboard?.writeText(b.dataset.t).then(()=>{ b.textContent="¡Copiado!"; setTimeout(()=>b.textContent="Copiar",1500); }); });
+renderThumbs(); applyMode();
+</script>
+</body>
+</html>
